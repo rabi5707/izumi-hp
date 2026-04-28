@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(curl -s -I \"https://api.anthropic.com/v1/design/h/ly_e9vkKXT7K2HMNzdQ5ow?open_file=index.html\")",
+      "Bash(curl -s -X GET \"https://api.anthropic.com/v1/design/h/ly_e9vkKXT7K2HMNzdQ5ow\" -H \"Accept: application/json\")",
+      "Bash(curl -s -X POST \"https://api.anthropic.com/v1/design/h/ly_e9vkKXT7K2HMNzdQ5ow\" -H \"Accept: application/json\")",
+      "Bash(curl -s -L \"https://claude.ai/design/h/ly_e9vkKXT7K2HMNzdQ5ow?open_file=README.md\")",
+      "mcp__Claude_in_Chrome__tabs_context_mcp",
+      "Bash(npm --version)",
+      "Bash(npm install:*)",
+      "Bash(npx next:*)",
+      "Bash(npx tsc:*)",
+      "Bash(mv hero.png hero.png.old)",
+      "Bash(mv hero.jpg.png hero.png)",
+      "Bash(taskkill //F //IM node.exe)",
+      "Bash(npm run *)",
+      "Bash(mkdir -p C:/APP/HP/public/images/occasion)",
+      "Bash(mv \"お食い初め・七五三.png\" occasion/okuizome.png)",
+      "Bash(mv \"法要・法事.png\" occasion/houji.png)",
+      "Bash(mv \"帰省・家族の集まり.png\" occasion/kisei.png)",
+      "Bash(mv \"ご贈答・季節のご挨拶.png\" occasion/zoutou.png)"
+    ]
+  }
+}

@@ -1,0 +1,760 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Design tokens ported from the Claude Design prototype. */
+@import "./styles-design.css";
+
+/* ===========================================================
+   Section palettes — visually distinguish each brand section
+   without changing layout/structure. Each section gets a
+   dedicated accent color system plus optional gold accent.
+   =========================================================== */
+
+/* Shop (default / frozen-EC) — keep current 朱茶 palette, add gold */
+main[data-section="shop"] {
+  --section-accent: var(--accent);
+  --section-accent-soft: var(--accent-soft);
+  --section-accent-ink: oklch(0.32 0.06 30);
+  --section-gold: transparent;
+  --section-hero-font: var(--f-serif);
+  --section-heading-font: var(--f-serif);
+  --section-mood: "quiet-traditional";
+}
+
+/* Bento Delivery — ビジネスライク (深緑, gothic 寄り, 実務的) */
+main[data-section="bento-delivery"] {
+  --section-accent: #2d5f4e;
+  --section-accent-soft: rgba(45, 95, 78, 0.08);
+  --section-accent-ink: #1a3d33;
+  --section-gold: transparent;
+  --section-hero-font: var(--f-sans);
+  --section-heading-font: var(--f-heading);
+  --section-mood: "business-practical";
+}
+
+/* Full Catering — ラグジュアリー (深紅 + 金, 明朝, 華やか) */
+main[data-section="catering"] {
+  --section-accent: #8a2e2e;
+  --section-accent-soft: rgba(138, 46, 46, 0.08);
+  --section-accent-ink: #5a1e1e;
+  --section-gold: #b8924c;
+  --section-gold-soft: rgba(184, 146, 76, 0.12);
+  --section-hero-font: var(--f-serif);
+  --section-heading-font: var(--f-serif);
+  --section-mood: "luxurious-festive";
+}
+
+/* ——— Section-scoped overrides ———
+   These apply automatically when the right data-section is set
+   on <main>, so existing elements pick up the new accent without
+   changing their markup. */
+
+main[data-section] .btn-accent {
+  background: var(--section-accent);
+  border-color: var(--section-accent);
+}
+
+main[data-section] .btn-accent:hover {
+  filter: brightness(1.08);
+  background: var(--section-accent-ink);
+  border-color: var(--section-accent-ink);
+}
+
+main[data-section] a.more,
+main[data-section] .prod-tag.tag-accent {
+  color: var(--section-accent);
+}
+main[data-section] .prod-tag.tag-accent {
+  background: var(--section-accent);
+  color: #fff;
+}
+
+/* ——— Catering-only: gold touches ——— */
+main[data-section="catering"] .kanji-display em,
+main[data-section="catering"] .hero-headline em {
+  color: var(--section-gold);
+  font-style: normal;
+}
+
+/* ——— Bento-delivery: practical stat strip ——— */
+.stat-bar {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  background: var(--ink);
+  color: var(--bg);
+  font-family: var(--f-mono);
+  letter-spacing: 0.04em;
+}
+.stat-bar > div {
+  padding: 18px 24px;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.stat-bar > div:last-child {
+  border-right: none;
+}
+.stat-bar .stat-label {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  opacity: 0.6;
+}
+.stat-bar .stat-value {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+/* ——— Catering: cinematic hero overlay style ——— */
+.hero-cinematic {
+  position: relative;
+  min-height: 560px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--rule);
+}
+.hero-cinematic::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    105deg,
+    rgba(0, 0, 0, 0.55) 0%,
+    rgba(0, 0, 0, 0.25) 45%,
+    rgba(0, 0, 0, 0) 65%
+  );
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-cinematic > .hero-cinematic-content {
+  position: relative;
+  z-index: 2;
+}
+.hero-cinematic-gold {
+  display: inline-block;
+  padding: 4px 16px;
+  border: 1px solid var(--section-gold, #b8924c);
+  color: var(--section-gold, #b8924c);
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+}
+
+/* ——— Shop LP — hero blend with kinari background ——— */
+main[data-section="shop"] .hero-visual {
+  border-left: none;
+  background: transparent;
+}
+main[data-section="shop"] .hero-visual::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--bg) 0%,
+    rgba(245, 241, 234, 0.85) 4%,
+    rgba(245, 241, 234, 0.4) 10%,
+    transparent 22%
+  );
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* ——— Shop LP — editorial section markers (落款 style) ——— */
+.shop-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.shop-marker .num {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  letter-spacing: 0.3em;
+  color: var(--ink-mute);
+}
+.shop-marker .rule {
+  height: 1px;
+  width: 24px;
+  background: var(--rule);
+  display: inline-block;
+}
+.shop-marker .stamp {
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--f-serif);
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0;
+  flex-shrink: 0;
+}
+.shop-marker .en {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: 0.28em;
+  color: var(--ink-mute);
+  text-transform: uppercase;
+}
+
+.shop-section-h {
+  font-family: var(--f-heading);
+  font-weight: 400;
+  font-size: 32px;
+  letter-spacing: 0.14em;
+  line-height: 1.45;
+  margin: 0 0 18px;
+}
+
+.shop-section-lead {
+  font-size: 14px;
+  line-height: 2;
+  color: var(--ink-soft);
+  max-width: 640px;
+  margin: 0;
+}
+
+/* Frozen Quality — 3 points strip */
+.shop-quality-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.shop-quality-cell {
+  position: relative;
+  padding: 44px 28px 32px;
+  border-top: 2px solid var(--section-accent, var(--accent));
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* Reusable number badge for "3 features / reasons" sections.
+   Uses section accent so it adapts to each section. */
+.feat-num {
+  position: absolute;
+  top: 14px;
+  left: 24px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.22em;
+  color: var(--section-accent, var(--accent));
+  font-weight: 500;
+}
+.shop-quality-cell .icon {
+  color: var(--accent);
+}
+.shop-quality-cell .ja {
+  font-family: var(--f-heading);
+  font-size: 16px;
+  letter-spacing: 0.14em;
+  margin: 0;
+}
+.shop-quality-cell .desc {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+/* For Every Occasion — 4 image cards */
+.shop-occasion-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+.shop-occasion-card .label {
+  margin-top: 14px;
+  font-family: var(--f-heading);
+  font-size: 14px;
+  letter-spacing: 0.16em;
+  text-align: center;
+  color: var(--ink);
+}
+
+/* Our Craft — text + image + timeline */
+.shop-craft {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 56px;
+  align-items: center;
+}
+.shop-craft-timeline {
+  margin-top: 28px;
+  display: grid;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.shop-craft-timeline .row {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  gap: 20px;
+  font-size: 13px;
+  letter-spacing: 0.06em;
+}
+.shop-craft-timeline .yr {
+  font-family: var(--f-mono);
+  letter-spacing: 0.14em;
+  color: var(--accent);
+}
+.shop-craft-timeline .ev {
+  color: var(--ink-soft);
+}
+
+/* FAQ — 2x2 grid */
+.shop-faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.shop-faq-cell {
+  padding: 32px 32px;
+  border-right: 1px solid var(--rule-soft);
+  border-bottom: 1px solid var(--rule-soft);
+}
+.shop-faq-cell:nth-child(2n) {
+  border-right: none;
+}
+.shop-faq-cell:nth-last-child(-n + 2) {
+  border-bottom: none;
+}
+.shop-faq-cell .q {
+  font-family: var(--f-heading);
+  font-size: 14px;
+  letter-spacing: 0.1em;
+  line-height: 1.6;
+  margin: 0 0 14px;
+  color: var(--ink);
+}
+.shop-faq-cell .q::before {
+  content: "Q.";
+  font-family: var(--f-mono);
+  color: var(--accent);
+  margin-right: 10px;
+  letter-spacing: 0.08em;
+}
+.shop-faq-cell .a {
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--ink-soft);
+  margin: 0;
+}
+
+/* Lineup — categorized columns */
+.shop-lineup {
+  display: grid;
+  grid-template-columns: 3fr 2fr 3fr;
+  gap: 32px;
+  align-items: start;
+}
+.shop-lineup-col {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.shop-lineup-col-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+  margin-bottom: 8px;
+}
+.shop-lineup-col-head .ja {
+  font-family: var(--f-heading);
+  font-size: 16px;
+  letter-spacing: 0.18em;
+}
+.shop-lineup-col-head .en {
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.26em;
+  color: var(--ink-mute);
+}
+.shop-lineup-row {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 3), 1fr);
+  gap: 16px;
+}
+.shop-lineup-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+}
+.shop-lineup-card .name {
+  margin-top: 10px;
+  font-family: var(--f-heading);
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.shop-lineup-card .price {
+  margin-top: 4px;
+  font-family: var(--f-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  text-align: center;
+  color: var(--ink-soft);
+}
+
+/* Final CTA strip */
+.shop-final-cta {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  gap: 16px;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  flex-wrap: wrap;
+}
+.shop-final-cta .phone {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-right: 24px;
+  border-right: 1px solid var(--rule);
+}
+.shop-final-cta .phone .num {
+  font-family: var(--f-mono);
+  font-size: 26px;
+  letter-spacing: 0.06em;
+}
+.shop-final-cta .phone .hr {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+  margin-top: 4px;
+}
+
+@media (max-width: 900px) {
+  .shop-quality-grid,
+  .shop-faq-grid,
+  .shop-occasion-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .shop-craft,
+  .shop-lineup {
+    grid-template-columns: 1fr;
+  }
+  .shop-final-cta {
+    grid-template-columns: 1fr;
+  }
+  .shop-final-cta .phone {
+    border-right: none;
+    border-bottom: 1px solid var(--rule);
+    padding-right: 0;
+    padding-bottom: 16px;
+  }
+}
+
+/* ——— Mobile: collapse inline grids site-wide ———
+   Many components use inline `gridTemplateColumns: "1fr 1fr"` or
+   `repeat(N, 1fr)`. On narrow viewports we override these to a single
+   column so content stacks rather than crushes. !important is needed to
+   beat the inline style attribute. Scope to body so headers/footers
+   (rendered as siblings of <main>) are covered too. */
+@media (max-width: 768px) {
+  body [style*="grid-template-columns"] {
+    grid-template-columns: 1fr !important;
+  }
+  /* Heroes commonly request 480–720px min-height. */
+  body [style*="min-height: 720"],
+  body [style*="min-height: 640"],
+  body [style*="min-height: 560"],
+  body [style*="min-height: 480"] {
+    min-height: 380px !important;
+  }
+  /* Cap oversized inline display fonts */
+  body [style*="font-size: 64"] { font-size: 32px !important; }
+  body [style*="font-size: 56"] { font-size: 30px !important; }
+  body [style*="font-size: 48"] { font-size: 28px !important; }
+  body [style*="font-size: 40"] { font-size: 24px !important; }
+  body [style*="font-size: 36"] { font-size: 22px !important; }
+  /* Tame inline horizontal padding eating mobile width */
+  body [style*="padding: 80px 40px"],
+  body [style*="padding: 64px 40px"],
+  body [style*="padding: 56px 40px"],
+  body [style*="padding: 48px 40px"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+  /* Tame fixed inline widths inside collapsed grid cells */
+  body [style*="width: 280"],
+  body [style*="width: 320"],
+  body [style*="width: 360"] {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+@media (max-width: 480px) {
+  body [style*="font-size: 32"] { font-size: 22px !important; }
+  body [style*="min-height: 720"],
+  body [style*="min-height: 640"],
+  body [style*="min-height: 560"],
+  body [style*="min-height: 480"] {
+    min-height: 320px !important;
+  }
+  body [style*="padding: 80px"],
+  body [style*="padding: 64px"],
+  body [style*="padding: 56px"] {
+    padding-top: 28px !important;
+    padding-bottom: 28px !important;
+  }
+}
+
+/* ——— Hero image fitting on mobile ——— */
+@media (max-width: 768px) {
+  body section img,
+  body section picture img,
+  body footer img,
+  body header img {
+    object-position: center !important;
+  }
+}
+
+/* ——— Catering hero — responsive text/spacing ——— */
+.hero-catering-content {
+  min-height: 560px;
+  display: flex;
+  align-items: center;
+  padding: 80px 40px;
+}
+.hero-catering-inner {
+  color: var(--bg);
+  max-width: 620px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.hero-catering-lede {
+  font-size: 15px;
+  letter-spacing: 0.22em;
+  margin: 0 0 10px;
+  opacity: 0.85;
+}
+.hero-catering-lede-2 { margin: 0 0 28px; }
+.hero-catering-h1 {
+  font-size: 48px;
+  line-height: 1.35;
+  margin: 0;
+  letter-spacing: 0.1em;
+  color: var(--bg);
+}
+@media (max-width: 768px) {
+  .hero-catering-content {
+    min-height: 460px;
+    padding: 48px 20px;
+  }
+  .hero-catering-h1 { font-size: 32px; letter-spacing: 0.04em; }
+  .hero-catering-lede { font-size: 13px; letter-spacing: 0.16em; }
+}
+@media (max-width: 480px) {
+  .hero-catering-content { min-height: 400px; padding: 36px 16px; }
+  .hero-catering-h1 { font-size: 26px; }
+  .hero-catering-inner { gap: 16px; }
+}
+
+/* ——— Catering / BentoDelivery shared header layout ——— */
+.section-header-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  align-items: center;
+  gap: 24px;
+  height: 76px;
+  min-width: 0;
+}
+.section-header-bar .sh-logo {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  min-width: 0;
+}
+.section-header-bar .sh-mark {
+  font-family: var(--f-heading);
+  font-size: 20px;
+  letter-spacing: 0.16em;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.section-header-bar .sh-sub {
+  font-family: var(--f-heading);
+  font-size: 10px;
+  letter-spacing: 0.24em;
+  color: var(--ink-mute);
+  margin-top: 4px;
+  white-space: nowrap;
+}
+.section-header-bar .sh-nav {
+  display: flex;
+  gap: 28px;
+  justify-content: flex-end;
+  font-family: var(--f-heading);
+  font-size: 13px;
+  letter-spacing: 0.14em;
+  white-space: nowrap;
+}
+.section-header-bar .sh-tel {
+  font-family: var(--f-mono);
+  font-size: 16px;
+  letter-spacing: 0.06em;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+.section-header-bar .sh-cta {
+  white-space: nowrap;
+}
+@media (max-width: 920px) {
+  .section-header-bar {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "logo cta"
+      "nav  nav";
+    gap: 12px 16px;
+    height: auto;
+    padding: 12px 0;
+  }
+  .section-header-bar .sh-logo { grid-area: logo; }
+  .section-header-bar .sh-cta { grid-area: cta; align-self: center; }
+  .section-header-bar .sh-nav {
+    grid-area: nav;
+    justify-content: flex-start;
+    gap: 18px;
+    padding-top: 4px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .section-header-bar .sh-tel { display: none; }
+  .section-header-bar .sh-mark { font-size: 16px; }
+  .section-header-bar .sh-sub {
+    font-size: 9px;
+    white-space: normal;
+  }
+}
+@media (max-width: 480px) {
+  .section-header-bar .sh-cta {
+    font-size: 11px;
+    padding: 8px 14px;
+  }
+  .section-header-bar .sh-mark { font-size: 14px; letter-spacing: 0.1em; }
+  .section-header-bar .sh-sub { display: none; }
+}
+
+/* ——— Persistent cross-section indicator strip ——— */
+.section-indicator {
+  position: relative;
+  font-family: var(--f-heading);
+  display: flex;
+  gap: 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--bg);
+}
+.section-indicator .si-services {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.section-indicator .si-brand {
+  display: flex;
+  flex: 0 0 auto;
+  border-left: 1px solid var(--rule);
+  background: var(--paper);
+}
+.section-indicator a {
+  flex: 1;
+  padding: 14px 18px;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  color: var(--ink-mute);
+  border-right: 1px solid var(--rule-soft);
+  text-decoration: none;
+  transition: background 160ms ease, color 160ms ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  min-width: 0;
+}
+.section-indicator .si-ja-short,
+.section-indicator .si-en-short { display: none; }
+.section-indicator .si-services a:last-child {
+  border-right: 1px solid var(--rule-soft);
+}
+.section-indicator .si-brand a {
+  flex: 0 0 auto;
+  padding: 14px 22px;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+}
+.section-indicator .si-brand a:last-child {
+  border-right: none;
+}
+.section-indicator a:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+.section-indicator .si-brand a:hover {
+  background: var(--bg);
+}
+.section-indicator a.is-here {
+  color: var(--section-accent, var(--accent));
+  background: var(--paper);
+  box-shadow: inset 0 -2px 0 var(--section-accent, var(--accent));
+  font-weight: 500;
+}
+.section-indicator .si-brand a.is-here {
+  background: var(--bg);
+}
+.section-indicator .si-en {
+  display: block;
+  font-family: var(--f-mono);
+  font-size: 8px;
+  letter-spacing: 0.22em;
+  opacity: 0.5;
+  margin-top: 4px;
+}
+@media (max-width: 720px) {
+  .section-indicator {
+    flex-wrap: wrap;
+  }
+  .section-indicator .si-services {
+    flex: 1 1 100%;
+  }
+  .section-indicator .si-brand {
+    flex: 1 1 100%;
+    border-left: none;
+    border-top: 1px solid var(--rule);
+  }
+  .section-indicator .si-brand a {
+    flex: 1 1 0;
+  }
+  .section-indicator a {
+    padding: 10px 8px;
+    font-size: 10.5px;
+    letter-spacing: 0.12em;
+  }
+  .section-indicator .si-en { font-size: 7px; letter-spacing: 0.16em; }
+  .section-indicator .si-ja-full,
+  .section-indicator .si-en-full { display: none; }
+  .section-indicator .si-ja-short,
+  .section-indicator .si-en-short { display: block; }
+}
