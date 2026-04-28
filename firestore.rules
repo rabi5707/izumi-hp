@@ -1,0 +1,39 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== izumi-menu 系（QR閲覧 + admin編集） =====
+    match /menus/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /banquet_menus/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /plans/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+    match /events/{id} {
+      allow read: if true;
+      allow write: if request.auth != null;
+    }
+
+    // ===== izumi-hp 系（Admin SDK 経由のみ） =====
+    // クライアントSDKからの直接アクセスは拒否。
+    // サーバー側 (Next.js API route) は Admin SDK で rules をバイパスして書込。
+    match /orders/{id} {
+      allow read, write: if false;
+    }
+    match /inquiries/{id} {
+      allow read, write: if false;
+    }
+
+    // ===== その他は全拒否 =====
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

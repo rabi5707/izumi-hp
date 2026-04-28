@@ -1,16 +1,17 @@
 # 株式会社イズミ産業 サイト — 引継ぎドキュメント
 
 > **次回 Claude Code セッション、または別の開発者向けの引継ぎ資料**
-> 最終更新: 2026年4月25日
+> 最終更新: 2026年4月28日
 
 このドキュメントを読めば、プロジェクトの現状・設計思想・残作業がわかります。
 
-## 🚦 現在のステータス（2026-04-25 時点）
+## 🚦 現在のステータス（2026-04-28 時点）
 
-**塩漬け中**：Firebase の **プロジェクト数クォータ増加申請を Google Cloud に提出済み**。承認メール（通常2営業日以内）待ち。
+**Firebase 接続完了**。`/inquiry` 送信 → Firestore 書込まで動作確認済。
 
-承認が来たら → Firebase 接続作業（`.env.local` 設定 → Firestore rules → 動作確認）から再開。
-それまでは UI 微調整・コピー調整以外の本格的な実装は止めている。
+クォータ増加申請は不承認だったため、**既存の `izumi-menu-app-b8546` プロジェクトを相乗り運用** する方針に変更（詳細は「重要な設計判断」と「Firebase 構成」セクション参照）。
+
+次の優先タスク: **Stripe 接続** → メールアドレス確定 → 商品画像配置。
 
 ---
 
@@ -43,7 +44,7 @@
 - **スタイル**: Tailwind CSS + 独自CSS（`app/styles-design.css`、Claude Designからインポート）
 - **状態管理**: Zustand（カート用、localStorage 永続化）
 - **決済**: Stripe（API key 未設定、雛形のみ）
-- **データベース**: Firebase Firestore（プロジェクト数上限で停止中、`.env.local` 未設定。**2026-04-25 にクォータ増加申請を提出、承認待ち**）
+- **データベース**: Firebase Firestore（**接続済・稼働中**。`izumi-menu-app-b8546` プロジェクトを `c:\kentoAPP\izumi-menu` と相乗り運用。詳細は「Firebase 構成」セクション参照）
 - **画像**: Next.js Image（`SmartImage` コンポーネントでフォールバック対応）
 
 ```bash
@@ -294,15 +295,12 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 
 ### 🔴 優先度: 高（公開前に必須）
 
-#### 1. Firebase 接続（クォータ増加申請 → 承認待ち）
-- **2026-04-25 に Google Cloud にプロジェクト数クォータ増加を申請済み**（Blaze 化前提・15プロジェクト上限希望）
-- 通常2営業日以内に承認可否のメールが来る予定
-- 承認後の手順:
-  1. 新規 Firebase プロジェクト作成
-  2. `.env.local` を `.env.local.example` を参考に作成
-  3. Firestore rules 設定（注文・お見積の書込制限）
-  4. 動作確認: `/inquiry` 送信 → Firestore に記録される
-- 不承認の場合のフォールバック: 別 Google アカウントで運用 or Supabase に切替
+#### 1. ~~Firebase 接続~~ ✅ 完了（2026-04-28）
+- クォータ増加申請は **不承認** だったため、既存の `izumi-menu-app-b8546` プロジェクトを相乗り運用
+- `.env.local` 設定済（Admin SDK のサービスアカウントJSON投入済）
+- Firestore rules / Storage rules 設定済（`c:\kentoAPP\izumi-hp\firestore.rules` で一元管理）
+- `/inquiry` 送信 → Firestore `inquiries` collection 書込まで動作確認済
+- 詳細は **「Firebase 構成」** セクション参照
 
 #### 2. Stripe 接続
 - Stripe アカウント作成 → API key 取得
@@ -348,8 +346,11 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 
 ## 🧠 重要な設計判断（過去の議論から）
 
-### 1. Firebase より Firestore（Supabaseは見送り）
-ユーザーが Firebase 派。プロジェクト数上限で詰まったら別アカ運用 or Supabaseに切替。
+### 1. Firebase プロジェクトを `izumi-menu` と相乗り運用（2026-04-28 確定）
+- クォータ増加申請が **不承認** → 新規プロジェクト作成不可
+- 隣の `c:\kentoAPP\izumi-menu`（既存・QR専用の裏ツール）が既に持っている `izumi-menu-app-b8546` プロジェクトを共用
+- collection 名は衝突なし（hp = `orders`, `inquiries` / menu = `menus`, `banquet_menus`, `plans`, `events`）
+- 詳細は **「Firebase 構成」** セクション
 
 ### 2. ポータル階層を `/` に作った
 「3サービスを対等に扱う」ため、shop を `/shop` に降格。
@@ -367,6 +368,54 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 
 ### 6. ケータリングの最低注文は人数ベース
 当初は金額（¥30,000 / ¥50,000）だったが、人数（20名 / 50名）の方が直感的なので変更。
+
+---
+
+## 🔥 Firebase 構成（重要）
+
+### プロジェクト共有
+
+`izumi-menu-app-b8546` を **2サイトで共用**：
+
+| サイト | フォルダ | 役割 | URL |
+|---|---|---|---|
+| **izumi-hp** | `c:\kentoAPP\izumi-hp` | 公式サイト（SEO・広告のメイン） | （未確定） |
+| **izumi-menu** | `c:\kentoAPP\izumi-menu` | QR専用の裏ツール（noindex想定） | `https://izumi-menu-app-b8546.web.app/` |
+
+両サイトはドメインで完全分離（SEO 干渉なし）。
+
+### Firebase 設定の "真実の源" は izumi-hp
+
+rules 二重管理を防ぐため、Firebase 設定ファイルは **すべて izumi-hp に集約**：
+
+- `c:\kentoAPP\izumi-hp\firestore.rules` ← rules はここで管理
+- `c:\kentoAPP\izumi-hp\storage.rules`
+- `c:\kentoAPP\izumi-hp\firestore.indexes.json`
+- `c:\kentoAPP\izumi-hp\firebase.json`
+- `c:\kentoAPP\izumi-hp\.firebaserc`
+
+izumi-menu フォルダにある旧 rules は `*.deprecated` にリネーム済（編集禁止）。詳細は `c:\kentoAPP\izumi-menu\RULES_MOVED.md`。
+
+### デプロイコマンド
+
+| 対象 | 実行フォルダ | コマンド |
+|---|---|---|
+| Firestore rules | `c:\kentoAPP\izumi-hp` | `firebase deploy --only firestore:rules` |
+| Storage rules | `c:\kentoAPP\izumi-hp` | `firebase deploy --only storage` |
+| Firestore indexes | `c:\kentoAPP\izumi-hp` | `firebase deploy --only firestore:indexes` |
+| izumi-menu のサイト本体 | `c:\kentoAPP\izumi-menu` | `firebase deploy --only hosting` |
+| izumi-hp のサイト本体 | （未定・Vercel想定） | — |
+
+### Firestore collection の責任分担
+
+| collection | 所有 | アクセス |
+|---|---|---|
+| `menus` / `banquet_menus` / `plans` / `events` | izumi-menu | read public（QR閲覧）、write auth（admin編集） |
+| `orders` / `inquiries` | izumi-hp | クライアント全拒否、Admin SDK 経由のみ |
+
+### Storage
+
+`menu_images/*`（既存・izumi-menu 由来）は read public・write auth で運用継続。izumi-hp 側で Storage を使う際も同じポリシー。
 
 ---
 
@@ -474,6 +523,9 @@ AI生成プロンプト集: `docs/image-prompts.md`
 17. **2026-04-25**: ケータリング casual プランを ¥2,000 → ¥2,500 に値上げ
 18. **2026-04-25**: 配送料表記を「1か所¥10,000以上で無料」に明確化（複数配送先対応の含み）
 19. **2026-04-25**: Firebase クォータ増加申請を Google Cloud に提出 → **承認待ち**
+20. **2026-04-28**: クォータ増加申請が**不承認** → 既存 `izumi-menu-app-b8546`（隣の `c:\kentoAPP\izumi-menu` プロジェクトのもの）を相乗り運用する方針に変更
+21. **2026-04-28**: Firebase 設定ファイル（rules / firebase.json / .firebaserc）を **izumi-hp 側に一元管理**。izumi-menu 側の旧rulesは `.deprecated` にリネームし `RULES_MOVED.md` で誘導
+22. **2026-04-28**: `.env.local` 設定完了 → `/inquiry` から Firestore `inquiries` collection への書込を動作確認
 
 ---
 
