@@ -7,7 +7,13 @@
 
 ## 🚦 現在のステータス（2026-04-28 時点）
 
-**Firebase 接続完了**。`/inquiry` 送信 → Firestore 書込まで動作確認済。
+**Vercel デプロイ完了**。役員レビュー用に Basic 認証で保護中。
+
+- 本番URL: `https://izumi-hp.vercel.app`
+- デプロイ先: Vercel (`rabi5707's projects` / Hobby プラン)
+- 自動デプロイ: GitHub `main` への push で自動再ビルド
+- Basic 認証: ID `hiromi` / PW `isg0163`（一般公開時に env vars を空にして無効化）
+- Firebase 接続済（`/inquiry` → Firestore 書込動作確認済）
 
 クォータ増加申請は不承認だったため、**既存の `izumi-menu-app-b8546` プロジェクトを相乗り運用** する方針に変更（詳細は「重要な設計判断」と「Firebase 構成」セクション参照）。
 
