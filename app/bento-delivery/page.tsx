@@ -601,13 +601,9 @@ export default function BentoDeliveryHome() {
         }}
       >
         <div
-          className="shell"
+          className="shell r-cta-bar"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto auto",
             gap: 24,
-            alignItems: "center",
-            flexWrap: "wrap",
           }}
         >
           <div>

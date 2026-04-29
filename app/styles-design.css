@@ -126,6 +126,16 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
   .r-hero-split-wide > .r-hero-text { order: 1; padding-right: 0 !important; }
 }
 
+/* CTA strip: "headline + button + phone box" pattern.
+   Desktop = 3 columns inline. Mobile = stacked, full-width buttons. */
+.r-cta-bar { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 24px; }
+@media (max-width: 767px) {
+  .r-cta-bar { grid-template-columns: 1fr; gap: 16px; text-align: center; }
+  .r-cta-bar > * { justify-self: stretch; }
+  .r-cta-bar > a.btn,
+  .r-cta-bar > .btn { width: 100%; }
+}
+
 .stack > * + * { margin-top: var(--s-4); }
 .row  { display: flex; gap: var(--s-4); }
 .row-c { display: flex; gap: var(--s-4); align-items: center; }
