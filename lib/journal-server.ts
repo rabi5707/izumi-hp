@@ -72,6 +72,26 @@ export async function fetchPostsByService(
     .filter((p) => p.services.includes(service));
 }
 
+/** All posts including drafts, newest first. ADMIN ONLY — never expose. */
+export async function fetchAllPostsForAdmin(): Promise<JournalPostDoc[]> {
+  const db = getAdminDb();
+  const snap = await db
+    .collection(COLLECTION)
+    .orderBy("publishedAt", "desc")
+    .get();
+  return snap.docs.map((d) => docToPost(d.data()));
+}
+
+/** Single post by slug regardless of publish state. ADMIN ONLY — never expose. */
+export async function fetchPostBySlugForAdmin(
+  slug: string
+): Promise<JournalPostDoc | null> {
+  const db = getAdminDb();
+  const snap = await db.collection(COLLECTION).doc(slug).get();
+  if (!snap.exists) return null;
+  return docToPost(snap.data()!);
+}
+
 /**
  * Posts related to the given slug, scored by overlap on:
  *   - primary service (×4) / shared service (×1) / shared cat (×2) / shared tag (×1)
