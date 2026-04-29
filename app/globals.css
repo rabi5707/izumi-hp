@@ -732,6 +732,18 @@ main[data-section="shop"] .hero-visual::before {
   opacity: 0.5;
   margin-top: 4px;
 }
+.section-indicator .si-soon {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 6px;
+  font-family: var(--f-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  color: var(--bg);
+  background: var(--ink-mute);
+  border-radius: 2px;
+  vertical-align: middle;
+}
 @media (max-width: 720px) {
   .section-indicator {
     flex-wrap: wrap;

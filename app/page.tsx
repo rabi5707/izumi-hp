@@ -378,6 +378,24 @@ export default function Portal() {
                   >
                     {s.num}
                   </div>
+                  {s.comingSoon && (
+                    <div
+                      style={{
+                        position: "absolute",
+                        top: 12,
+                        right: 12,
+                        background: "rgba(0,0,0,0.78)",
+                        color: "#fff",
+                        padding: "6px 12px",
+                        fontFamily: "var(--f-heading)",
+                        fontSize: 11,
+                        letterSpacing: "0.18em",
+                        border: "1px solid rgba(184,146,76,0.6)",
+                      }}
+                    >
+                      近日公開
+                    </div>
+                  )}
                 </div>
                 <div
                   style={{
@@ -514,7 +532,7 @@ export default function Portal() {
                     style={{
                       display: "block",
                       padding: "14px 18px",
-                      background: s.ctaBg,
+                      background: s.comingSoon ? "var(--ink-mute)" : s.ctaBg,
                       color: "#fff",
                       textAlign: "center",
                       textDecoration: "none",
@@ -523,13 +541,9 @@ export default function Portal() {
                       letterSpacing: "0.16em",
                     }}
                   >
-                    {s.ja.replace(/・.*$/, "")}
-                    {s.slug === "shop"
-                      ? "を見る"
-                      : s.slug === "catering"
-                        ? "を見る"
-                        : "を見る"}{" "}
-                    ›
+                    {s.comingSoon
+                      ? "近日公開のお知らせ ›"
+                      : `${s.ja.replace(/・.*$/, "")}を見る ›`}
                   </Link>
                 </div>
               </div>
@@ -856,7 +870,7 @@ export default function Portal() {
                 href={s.href}
                 style={{
                   padding: "16px 20px",
-                  background: s.ctaBg,
+                  background: s.comingSoon ? "var(--ink-mute)" : s.ctaBg,
                   color: "#fff",
                   textAlign: "center",
                   textDecoration: "none",
@@ -879,7 +893,7 @@ export default function Portal() {
                   }
                   size={18}
                 />
-                {s.ja}を見る ›
+                {s.comingSoon ? `${s.ja} 近日公開 ›` : `${s.ja}を見る ›`}
               </Link>
             ))}
           </div>

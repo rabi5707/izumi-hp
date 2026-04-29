@@ -17,6 +17,7 @@ const ENTRIES: {
   en: string;
   enShort: string;
   tag: string;
+  comingSoon?: boolean;
 }[] = [
   {
     id: "portal",
@@ -35,6 +36,7 @@ const ENTRIES: {
     en: "FROZEN · NATIONWIDE",
     enShort: "FROZEN",
     tag: "全国配送",
+    comingSoon: true,
   },
   {
     id: "bento-delivery",
@@ -88,6 +90,7 @@ export function SectionIndicator() {
             <span className="si-ja-short">{e.jaShort}</span>
             <span className="si-en si-en-full">{e.en}</span>
             <span className="si-en si-en-short">{e.enShort}</span>
+            {e.comingSoon && <span className="si-soon">近日</span>}
           </Link>
         ))}
       </div>

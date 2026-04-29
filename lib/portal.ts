@@ -18,6 +18,8 @@ export type PortalService = {
   /** Reuse each section's existing hero image for the portal card. */
   image: string;
   imageObjectPosition?: string;
+  /** When true, render a "近日公開" badge on portal cards / nav. */
+  comingSoon?: boolean;
 };
 
 export const SERVICES: PortalService[] = [
@@ -44,6 +46,7 @@ export const SERVICES: PortalService[] = [
     ctaBg: "#2c4a6b",
     image: "/images/hero.png",
     imageObjectPosition: "center",
+    comingSoon: true,
   },
   {
     slug: "bento-delivery",

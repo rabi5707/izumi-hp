@@ -1,4 +1,4 @@
-import { SectionIndicator } from "@/components/SectionIndicator";
+import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export default function ShopLayout({
@@ -8,7 +8,7 @@ export default function ShopLayout({
 }) {
   return (
     <>
-      <SectionIndicator />
+      <SiteHeader />
       <main data-section="shop">{children}</main>
       <SiteFooter />
     </>
