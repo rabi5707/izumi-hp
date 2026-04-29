@@ -95,6 +95,37 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
   .shell-wide { padding: 0 12px; }
 }
 
+/* ——— Responsive grid utilities ———
+   Use these classes instead of inline `gridTemplateColumns` so layouts
+   collapse predictably on tablet (≤1023) and mobile (≤768).
+   .r-grid-N is "N columns on desktop" and steps down on smaller widths.
+   .r-hero-split is the standard text+image hero (image stacks below). */
+.r-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); }
+.r-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); }
+.r-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); }
+.r-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); }
+.r-hero-split { display: grid; grid-template-columns: 1fr 1fr; }
+.r-hero-split-wide { display: grid; grid-template-columns: 1.2fr 1fr; }
+
+@media (max-width: 1023px) {
+  .r-grid-3 { grid-template-columns: repeat(2, 1fr); }
+  .r-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .r-grid-6 { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 767px) {
+  .r-grid-2,
+  .r-hero-split,
+  .r-hero-split-wide { grid-template-columns: 1fr; }
+  .r-grid-3 { grid-template-columns: 1fr; }
+  .r-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .r-grid-6 { grid-template-columns: repeat(2, 1fr); }
+  /* Heroes that put image on the right should put it BELOW text on mobile */
+  .r-hero-split > .r-hero-media,
+  .r-hero-split-wide > .r-hero-media { order: 2; min-height: 280px !important; }
+  .r-hero-split > .r-hero-text,
+  .r-hero-split-wide > .r-hero-text { order: 1; padding-right: 0 !important; }
+}
+
 .stack > * + * { margin-top: var(--s-4); }
 .row  { display: flex; gap: var(--s-4); }
 .row-c { display: flex; gap: var(--s-4); align-items: center; }
@@ -548,6 +579,24 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
   width: 120px;
   font-family: var(--f-heading); font-weight: 500; letter-spacing: 0.16em;
   color: var(--ink-mute);
+}
+@media (max-width: 640px) {
+  .spec-table, .spec-table tbody, .spec-table tr, .spec-table th, .spec-table td {
+    display: block; width: 100% !important;
+  }
+  .spec-table tr {
+    border-bottom: 1px solid var(--rule);
+    padding: 8px 0;
+  }
+  .spec-table th {
+    padding: 12px 0 4px;
+    border-bottom: none;
+    white-space: normal !important;
+  }
+  .spec-table td {
+    padding: 0 0 12px;
+    border-bottom: none;
+  }
 }
 .qty-row { display: flex; align-items: center; gap: 16px; }
 .qty {

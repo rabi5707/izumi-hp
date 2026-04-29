@@ -88,16 +88,15 @@ export default function BentoDeliveryHome() {
       />
       {/* Hero */}
       <section
-        className="shell"
+        className="shell r-hero-split"
         style={{
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
           gap: 0,
           borderBottom: "1px solid var(--rule)",
           minHeight: 480,
         }}
       >
         <div
+          className="r-hero-text"
           style={{
             padding: "56px 40px 48px 0",
             display: "flex",
@@ -191,7 +190,7 @@ export default function BentoDeliveryHome() {
           </div>
         </div>
 
-        <div style={{ position: "relative", minHeight: 480 }}>
+        <div className="r-hero-media" style={{ position: "relative", minHeight: 480 }}>
           <HeroSlideshow
             slides={[
               {
@@ -236,16 +235,14 @@ export default function BentoDeliveryHome() {
 
       {/* Service overview — delivery car emphasis */}
       <section
-        className="shell"
+        className="shell r-hero-split"
         style={{
           padding: "64px 40px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
           gap: 48,
           alignItems: "center",
         }}
       >
-        <div>
+        <div className="r-hero-text">
           <div className="label-en" style={{ marginBottom: 12 }}>
             Simple Service
           </div>
@@ -282,6 +279,7 @@ export default function BentoDeliveryHome() {
           labelEn="IMG / delivery-van"
           labelJa="お届けの様子"
           aspect="4/3"
+          className="r-hero-media"
         />
       </section>
 
@@ -300,9 +298,8 @@ export default function BentoDeliveryHome() {
           </h2>
         </div>
         <div
+          className="r-grid-6"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
             gap: 12,
           }}
         >
@@ -363,9 +360,8 @@ export default function BentoDeliveryHome() {
             </h2>
           </div>
           <div
+            className="r-grid-3"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               gap: 20,
             }}
           >
@@ -428,9 +424,8 @@ export default function BentoDeliveryHome() {
           </h2>
         </div>
         <div
+          className="r-grid-3"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 20,
           }}
         >
@@ -533,9 +528,8 @@ export default function BentoDeliveryHome() {
           </h2>
         </div>
         <div
+          className="r-grid-3"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 20,
             maxWidth: 960,
             margin: "0 auto",

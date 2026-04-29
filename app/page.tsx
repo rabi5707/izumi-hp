@@ -258,11 +258,9 @@ export default function Portal() {
 
       {/* Brand story */}
       <section
-        className="shell"
+        className="shell r-hero-split"
         style={{
           padding: "80px 40px",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
           gap: 48,
           alignItems: "center",
         }}
@@ -339,9 +337,8 @@ export default function Portal() {
           </div>
 
           <div
+            className="r-grid-3"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               gap: 20,
             }}
           >
@@ -472,9 +469,8 @@ export default function Portal() {
                     ))}
                   </ul>
                   <div
+                    className="r-grid-2"
                     style={{
-                      display: "grid",
-                      gridTemplateColumns: "1fr 1fr",
                       gap: 10,
                       padding: "12px 14px",
                       background: "var(--bg)",
@@ -572,9 +568,8 @@ export default function Portal() {
           </h2>
         </div>
         <div
+          className="r-grid-4"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
             gap: 24,
           }}
         >
@@ -643,9 +638,8 @@ export default function Portal() {
             </h2>
           </div>
           <div
+            className="r-grid-4"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
               gap: 16,
             }}
           >
@@ -721,11 +715,9 @@ export default function Portal() {
         }}
       >
         <div
-          className="shell"
+          className="shell r-hero-split-wide"
           style={{
             padding: "0 40px",
-            display: "grid",
-            gridTemplateColumns: "1.5fr 1fr",
             gap: 48,
             alignItems: "center",
           }}
@@ -858,9 +850,8 @@ export default function Portal() {
             </h3>
           </div>
           <div
+            className="r-grid-3"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               gap: 12,
             }}
           >

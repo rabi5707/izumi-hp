@@ -181,9 +181,8 @@ export default function CateringHome() {
           </h2>
         </div>
         <div
+          className="r-grid-6"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(6, 1fr)",
             gap: 12,
           }}
         >
@@ -232,9 +231,8 @@ export default function CateringHome() {
           </h2>
         </div>
         <div
+          className="r-grid-3"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 20,
           }}
         >
@@ -292,9 +290,8 @@ export default function CateringHome() {
           </h2>
         </div>
         <div
+          className="r-grid-2"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 20,
             maxWidth: 960,
             margin: "0 auto",

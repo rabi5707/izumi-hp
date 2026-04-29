@@ -59,9 +59,8 @@ export default function CateringGuide() {
       {/* Process steps */}
       <section className="shell" style={{ padding: "32px 40px" }}>
         <div
+          className="r-grid-4"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
             gap: 20,
           }}
         >
@@ -156,9 +155,8 @@ export default function CateringGuide() {
           </p>
         </div>
         <div
+          className="r-grid-2"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 20,
             maxWidth: 880,
             margin: "0 auto",
@@ -204,9 +202,8 @@ export default function CateringGuide() {
           </p>
         </div>
         <div
+          className="r-grid-2"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(2, 1fr)",
             gap: 20,
             maxWidth: 880,
             margin: "0 auto",
