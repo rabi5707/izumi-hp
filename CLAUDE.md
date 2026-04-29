@@ -1,11 +1,11 @@
 # 株式会社イズミ産業 サイト — 引継ぎドキュメント
 
 > **次回 Claude Code セッション、または別の開発者向けの引継ぎ資料**
-> 最終更新: 2026年4月29日
+> 最終更新: 2026年4月30日
 
 このドキュメントを読めば、プロジェクトの現状・設計思想・残作業がわかります。
 
-## 🚦 現在のステータス（2026-04-29 時点）
+## 🚦 現在のステータス（2026-04-30 時点）
 
 **Vercel デプロイ完了**、**ブラウザで完結する管理画面（読み物 + 画像庫）も稼働中**。役員レビュー用に Basic 認証で保護中。
 
@@ -17,10 +17,13 @@
 - 管理画面ログイン: `yamaizumi@isg.co.jp` + Firebase Auth パスワード（izumi-menu と共通）
 - Firebase 接続済（`/inquiry` → Firestore、`/journal` → Firestore + ISR、画像 → Storage）
 - **冷凍折詰 (`/shop`) は「近日公開」モード**（2026-04-29 切替済、サブルートはすべて `/shop` にリダイレクト）
+- **スマホ対応 Phase 1 完了**（2026-04-30）— `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティ導入。主要4ページ（portal/catering top+guide/bento-delivery top）+ フッターを置換済み。残ページは Phase 2 で対応
+- **決済方法・注文締切ルール確定**（2026-04-29）— bento/catering = 銀行振込 or 当日現金、shop = Stripe（商品確定後）。納期: bento = 2日前17時、catering = 1週間前
+- **宴会場の名称変更**（2026-04-30）— 「日本料理 広美」→「料亭 横浜銀泉亭」へ全面リネーム
 
 クォータ増加申請は不承認だったため、**既存の `izumi-menu-app-b8546` プロジェクトを相乗り運用** する方針（詳細は「重要な設計判断」と「Firebase 構成」セクション参照）。
 
-次の優先タスク: **Stripe 接続** → メールアドレス確定 → ケータリング/お届け弁当の商品画像配置（Phase 5-Lite で十分か、5-Full まで踏むかは要判断）。
+次の優先タスク: **Stripe 接続** → メールアドレス確定 → スマホ対応 Phase 2（残ページ）→ ケータリング/お届け弁当の商品画像配置（Phase 5-Lite で十分か、5-Full まで踏むかは要判断）。
 
 ---
 
@@ -40,7 +43,7 @@
 - 創業: 昭和四十九年(1974年)
 - 所在地: 神奈川県横浜市保土ヶ谷区仏向町 946
 - 電話: 045-333-0163（横浜本店）
-- 関連: 団体様向け宴会施設「日本料理 広美」併設
+- 関連: 団体様向け宴会施設「料亭 横浜銀泉亭」併設（旧名: 日本料理 広美）
 - 本社: https://www.isg.co.jp/
 
 **運営責任者:** 山泉 貴郎
@@ -331,6 +334,10 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 ### 共通
 - [x] お見積フォーム（`/inquiry/InquiryClient.tsx` を各セクションで再利用、Firestore書込済）
 - [x] **3セクション横断の番号バッジ + アクセントライン**（`.feat-num` クラス）
+- [x] **決済方法の表記統一**（2026-04-29）— bento/catering の各 LP・特商法・inquiry に「銀行振込 or 当日現金」を反映、inquiry フォームに希望決済 chip 追加
+- [x] **注文締切ルールの統一**（2026-04-29）— bento = ご希望日の2日前17時、catering = 1週間前。「お急ぎはお電話で」を必ず併記
+- [x] **スマホ向けレスポンシブ Phase 1**（2026-04-30）— `app/styles-design.css` に `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティを新設、portal/catering/bento-delivery の主要4ページ + 両セクションフッター + 特商法表（spec-table）を mobile 対応
+- [x] **宴会場の名称変更**（2026-04-30）— アクティブコード（portal / SiteFooter / about / CateringFooter / lib/portal.ts）を「日本料理 広美」→「料亭 横浜銀泉亭」に置換
 
 ---
 
@@ -371,6 +378,14 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 - 沿革（タイムライン）
 - 板前紹介
 - 受賞歴・メディア掲載
+
+#### 7. スマホ対応 Phase 2（Phase 1 の続き）
+- 残ページ: shop / journal / legal / admin 系の inline `gridTemplateColumns` を `.r-grid-*` ユーティリティに置換（残約20箇所）
+- catering/menu, bento-delivery/menu, 各 inquiry サブページ
+- ヘッダー（SiteHeader）のスマホ対応 — `section-header-bar` のスマホ対応はあるが SiteHeader は別系統
+- 実機 or DevTools で確認 → 微調整
+- ユーティリティクラス設計は `app/styles-design.css` 参照（`.r-grid-N`、`.r-hero-split[-wide]` の `.r-hero-text` / `.r-hero-media` 子要素マーカー、`.r-cta-bar`）
+- 注意: `globals.css` は `styles-design.css` を import 後に独自スタイルを追加するので、`.stat-bar` のような globals.css 側で定義された要素を mobile 上書きする場合は globals.css 側に media query を書くこと（カスケード順序）
 
 ### 🟢 優先度: 低（あれば良い）
 
@@ -524,16 +539,17 @@ NEXT_PUBLIC_SITE_URL=http://localhost:3000
 |---|---|---|---|
 | ポータル ヒーロー | `portal-hero.png` | `public/images/` | ✅ |
 | ポータル 店舗外観 | `portal-storefront.jpg` | `public/images/` | ✅（2026-04-29 配置・新社屋全景） |
-| ポータル 広美 | `portal-hiromi.jpg` | `public/images/` | ✅（2026-04-29 配置・2Fホワイエ） |
+| ポータル 横浜銀泉亭（ホワイエ）| `portal-hiromi.jpg` | `public/images/` | ✅（2026-04-29 配置・2Fホワイエ。ファイル名は旧称由来） |
+| 横浜銀泉亭 宴会場 | `ginsentei-banquet.jpg` | `public/images/` | ✅（2026-04-30 配置・実写。`/catering` フッターの広美枠で使用） |
 | /shop ヒーロー | `hero.png` | `public/images/` | ✅（_archive 復活時に使用） |
 | /shop シーン画像 | `okuizome.png` 等 | `public/images/occasion/` | ✅ |
 | /shop 板前画像 | `kitchen.png` | `public/images/about/` | ✅（_archive 復活時に使用） |
 | /shop 商品 | `{id}.jpg` | `public/images/products/` | ❌（shop 公開準備時に） |
 | /catering ヒーロー | `hero.jpg` | `public/images/catering/` | ✅（2026-04-29 和の設え版に差替、旧2世代は `_backup/`） |
-| /catering 広美 | `hiromi-building.jpg` | `public/images/catering/` | ❌ 実写予定 |
 | /bento-delivery ヒーロー | `hero-bento.png`, `hero-party.png` | `public/images/bento-delivery/` | ✅ |
 | /bento-delivery 配達車 | `delivery-van.png` | `public/images/bento-delivery/` | ✅ |
 | /bento-delivery 商品 | `kaigou.jpg`, `roke.jpg`, `party.jpg` | `public/images/bento-delivery/` | ❌（Phase 5-Lite で対応予定） |
+| /bento-delivery フッター 横浜本社 | `portal-storefront.jpg` を流用 | `public/images/` | ✅（2026-04-30 差替、元は存在しない `hiromi-building.jpg` を参照していた） |
 
 未配置の画像は `SmartImage` が **斜線パターンのプレースホルダー** を自動表示。
 
@@ -612,6 +628,10 @@ AI生成プロンプト集: `docs/image-prompts.md`
 27. **2026-04-29**: **管理画面 `/admin/journal` 新設**（Phase 3）。Firebase Auth (Email/Password) + `ADMIN_EMAILS` allowlist、Admin SDK セッションクッキー（5日）、middleware で `/admin/*` 保護、Server Actions で CRUD + `revalidatePath()` で即時反映、Markdown エディタ + プレビュー
 28. **2026-04-29**: **読み物カバー画像upload + `/admin/images` 汎用画像庫を追加**（Phase 4a + 4b）。Firebase Storage `journal-covers/` `uploads/` に保存、download token方式で公開URL発行、storage rules を Admin SDK のみ書込に絞った
 29. **2026-04-29**: ケータリング/お届け弁当/ポータルのデータも Firestore 化する Phase 5 構想を策定。年1〜2回の更新頻度なので **Phase 5-Lite（画像 URL を `/admin/images` で発行 → コードに貼る、3行コミットで済む）** で当面の目的（画像配置）を満たす方針。Phase 5-Full（全データ Firestore + 管理画面）は実際に編集頻度が上がってから検討
+30. **2026-04-29**: **決済方法を確定** — bento/catering = 銀行振込 or 当日現金（請求書払い・代引は不採用）、shop = Stripe（商品ラインナップ確定後に着手）。各 LP・特商法・inquiry フォームに反映済
+31. **2026-04-29**: **注文締切ルールを確定** — お届け弁当 = ご希望日の2日前17時、フルケータリング = 1週間前。「お急ぎはお電話で」を必ず併記。サイト全体の文言を統一
+32. **2026-04-30**: **スマホ向けレスポンシブ Phase 1** — `app/styles-design.css` に `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティを新設、portal/catering/bento-delivery の主要4ページ + フッターを置換。`globals.css` の旧ブルートフォース overrides（`body [style*="grid-template-columns"] { 1fr !important }`）を撤去し、6項目グリッドが縦6個に潰れる害を解消。`body { overflow-x: clip }` で site-wide 横スクロール防止。`.spec-table` の th/td 縦積み対応も追加
+33. **2026-04-30**: **宴会場の名称変更** — 「日本料理 広美」→「料亭 横浜銀泉亭」へ全面リネーム。`portal-hiromi.jpg`（2Fホワイエ・ファイル名は旧称由来のまま残置）と新画像 `ginsentei-banquet.jpg`（実写・宴会場）を `/catering` フッターで使用
 
 ---
 
@@ -640,7 +660,8 @@ AI生成プロンプト集: `docs/image-prompts.md`
 2. Stripe 接続 + shop の `_archive` から復活（shop公開準備、半日〜1日）
 3. メールアドレス確定 + 注文・お見積メール送信機能
 4. 会社案内ページの拡充（沿革・板前紹介・受賞歴）
-5. Phase 5-Full — catering / bento-delivery / portal を Firestore + 管理画面化（編集頻度が上がってから / 3〜4日）
+5. **スマホ対応 Phase 2** — shop/journal/legal/admin/menu/inquiry サブページの inline grid 置換、SiteHeader のスマホ対応、実機検証（半日〜1日）
+6. Phase 5-Full — catering / bento-delivery / portal を Firestore + 管理画面化（編集頻度が上がってから / 3〜4日）
 
 公開時期目安: 約半年後（2026年10月頃）
 
