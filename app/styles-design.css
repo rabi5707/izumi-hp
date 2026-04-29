@@ -1193,6 +1193,7 @@ button:disabled:hover, .btn:disabled:hover { transform: none; filter: none; }
   .time-pick { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* Site-wide overflow guard — prevents horizontal scroll if any inline-styled
-   element accidentally extends beyond the viewport on mobile. */
-html, body { overflow-x: hidden; }
+/* Site-wide overflow guard — `overflow-x: clip` doesn't establish a new
+   containing block (unlike `hidden`), so it won't break absolute-positioned
+   hero images. Apply only to body to be conservative. */
+body { overflow-x: clip; }
