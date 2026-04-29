@@ -40,14 +40,20 @@ export default async function AdminLayout({
               href="/admin/journal"
               style={{ color: "#fff", textDecoration: "none" }}
             >
-              ADMIN · 読み物管理
+              読み物
+            </Link>
+            <Link
+              href="/admin/images"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              画像庫
             </Link>
             <Link
               href="/journal"
               target="_blank"
               style={{ color: "#b8924c", textDecoration: "none" }}
             >
-              ↗ 公開ページを見る
+              ↗ 公開ページ
             </Link>
           </div>
           <div style={{ display: "flex", gap: 16, alignItems: "center" }}>
