@@ -107,6 +107,20 @@ main[data-section="catering"] .hero-headline em {
   font-weight: 500;
 }
 
+/* Mobile: lay out as 2x2 instead of N implicit columns from auto-flow.
+   These rules must live AFTER the base .stat-bar above (cascade order),
+   since both selectors have equal specificity. */
+@media (max-width: 900px) {
+  .stat-bar {
+    grid-auto-flow: row;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .stat-bar > div { padding: 12px 14px; }
+  .stat-bar .stat-value { font-size: 14px; }
+}
+
 /* ——— Catering: cinematic hero overlay style ——— */
 .hero-cinematic {
   position: relative;
