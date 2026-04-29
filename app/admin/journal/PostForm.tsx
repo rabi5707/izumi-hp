@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { JournalPostDoc } from "@/lib/journal-schema";
@@ -31,8 +32,18 @@ export function PostForm({
   const [showPreview, setShowPreview] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [coverRemove, setCoverRemove] = useState(false);
+
+  // Revoke object URL when component unmounts or preview changes.
+  useEffect(() => {
+    return () => {
+      if (coverPreview) URL.revokeObjectURL(coverPreview);
+    };
+  }, [coverPreview]);
 
   const today = formatToday();
+  const existingCover = seed.coverImage;
 
   return (
     <main
@@ -134,6 +145,95 @@ export function PostForm({
             rows={3}
             style={{ ...inputStyle, resize: "vertical" }}
           />
+        </Row>
+
+        <Row
+          label="カバー画像"
+          hint="記事一覧と詳細ページの上部に表示される画像（任意・JPEG/PNG/WebP・10MBまで）。"
+        >
+          <div
+            style={{
+              display: "flex",
+              gap: 16,
+              alignItems: "flex-start",
+              flexWrap: "wrap",
+            }}
+          >
+            {(coverPreview || (existingCover && !coverRemove)) && (
+              <div
+                style={{
+                  position: "relative",
+                  width: 220,
+                  aspectRatio: "16 / 9",
+                  background: "#f0ebe0",
+                  border: "1px solid #c9c1ac",
+                  overflow: "hidden",
+                }}
+              >
+                {coverPreview ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={coverPreview}
+                    alt="新しいカバー画像のプレビュー"
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                    }}
+                  />
+                ) : existingCover ? (
+                  <Image
+                    src={existingCover}
+                    alt="現在のカバー画像"
+                    fill
+                    sizes="220px"
+                    style={{ objectFit: "cover" }}
+                    unoptimized
+                  />
+                ) : null}
+              </div>
+            )}
+            <div style={{ flex: 1, minWidth: 240 }}>
+              <input
+                type="file"
+                name="cover"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={(e) => {
+                  const f = e.target.files?.[0];
+                  if (coverPreview) URL.revokeObjectURL(coverPreview);
+                  setCoverPreview(f ? URL.createObjectURL(f) : null);
+                  if (f) setCoverRemove(false);
+                }}
+                style={{ fontSize: 12 }}
+              />
+              {existingCover && (
+                <label
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 6,
+                    fontSize: 12,
+                    color: "#5a5346",
+                    marginTop: 12,
+                  }}
+                >
+                  <input
+                    type="checkbox"
+                    name="coverRemove"
+                    checked={coverRemove}
+                    onChange={(e) => {
+                      setCoverRemove(e.target.checked);
+                      if (e.target.checked && coverPreview) {
+                        URL.revokeObjectURL(coverPreview);
+                        setCoverPreview(null);
+                      }
+                    }}
+                  />
+                  既存のカバー画像を削除する
+                </label>
+              )}
+            </div>
+          </div>
         </Row>
 
         <Row label="読了の目安">

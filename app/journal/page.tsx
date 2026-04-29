@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { SERVICE_LABELS, isService, type Service } from "@/lib/journal";
 import {
   fetchAllPublishedPosts,
@@ -199,9 +200,29 @@ export default async function JournalPage({
                 <span className="jr-link">続きを読む　→</span>
               </div>
             </div>
-            <div className="jr-thumb ph">
-              <div className="ph-label">IMG / {p.slug}</div>
-            </div>
+            {p.coverImage ? (
+              <div
+                className="jr-thumb"
+                style={{
+                  position: "relative",
+                  background: "var(--bg-alt)",
+                  overflow: "hidden",
+                }}
+              >
+                <Image
+                  src={p.coverImage}
+                  alt={p.ja}
+                  fill
+                  sizes="(max-width: 768px) 30vw, 240px"
+                  style={{ objectFit: "cover" }}
+                  unoptimized
+                />
+              </div>
+            ) : (
+              <div className="jr-thumb ph">
+                <div className="ph-label">IMG / {p.slug}</div>
+              </div>
+            )}
           </Link>
           ))}
         </div>

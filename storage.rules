@@ -2,11 +2,27 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // 既存の izumi-menu のメニュー画像 (menu_images/*) もここで read public・write auth として運用される。
-    // izumi-hp 側で新たに Storage を使う場合（商品画像など）も同じポリシーで運用。
-    match /{allPaths=**} {
+    // izumi-menu のメニュー画像 (menu_images/*) — 公開閲覧、Auth で書込
+    match /menu_images/{file=**} {
       allow read: if true;
       allow write: if request.auth != null;
+    }
+
+    // izumi-hp 系の画像（読み物カバー、汎用アップロード等）
+    // クライアントSDKからの書込は拒否、Admin SDK 経由のみ。
+    // 読み取りは公開（公開記事に埋め込まれるため）。
+    match /journal-covers/{file=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+    match /uploads/{file=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // 既定: 拒否（明示しないパスは触れない）
+    match /{allPaths=**} {
+      allow read, write: if false;
     }
   }
 }

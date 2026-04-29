@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { SERVICE_LABELS } from "@/lib/journal";
@@ -148,15 +149,38 @@ export default async function JournalArticle({
           {post.en}
         </div>
 
-        <div
-          className="ph"
-          style={{
-            aspectRatio: "16/9",
-            marginBottom: 40,
-          }}
-        >
-          <div className="ph-label">IMG / {post.slug}</div>
-        </div>
+        {post.coverImage ? (
+          <div
+            style={{
+              position: "relative",
+              aspectRatio: "16/9",
+              marginBottom: 40,
+              background: "var(--bg-alt)",
+              overflow: "hidden",
+            }}
+          >
+            <Image
+              src={post.coverImage}
+              alt={post.ja}
+              fill
+              sizes="(max-width: 880px) 100vw, 880px"
+              quality={90}
+              style={{ objectFit: "cover" }}
+              priority
+              unoptimized
+            />
+          </div>
+        ) : (
+          <div
+            className="ph"
+            style={{
+              aspectRatio: "16/9",
+              marginBottom: 40,
+            }}
+          >
+            <div className="ph-label">IMG / {post.slug}</div>
+          </div>
+        )}
 
         <p
           style={{
