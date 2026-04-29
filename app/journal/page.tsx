@@ -1,13 +1,15 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SERVICE_LABELS, isService, type Service } from "@/lib/journal";
 import {
-  JOURNAL_POSTS,
-  SERVICE_LABELS,
-  getPostsByService,
-  isService,
-  type Service,
-} from "@/lib/journal";
+  fetchAllPublishedPosts,
+  fetchPostsByService,
+} from "@/lib/journal-server";
 import { breadcrumbLd, jsonLdScript } from "@/lib/seo";
+
+// Revalidate the listing every 60s. Phase 3 will switch to on-demand
+// revalidation triggered by admin save actions.
+export const revalidate = 60;
 
 type Search = { service?: string };
 
@@ -41,7 +43,7 @@ export function generateMetadata({
   };
 }
 
-export default function JournalPage({
+export default async function JournalPage({
   searchParams,
 }: {
   searchParams?: Search;
@@ -51,7 +53,9 @@ export default function JournalPage({
     : "all";
 
   const posts =
-    active === "all" ? JOURNAL_POSTS : getPostsByService(active);
+    active === "all"
+      ? await fetchAllPublishedPosts()
+      : await fetchPostsByService(active);
 
   const crumbs =
     active === "all"

@@ -6,7 +6,7 @@
 // Read path: published==true posts are served via Admin SDK with ISR.
 // Write path: Admin SDK only, gated by `/admin/journal` UI (Firebase Auth allowlist).
 
-import type { JournalSection, Service } from "./journal";
+import type { Service } from "./journal";
 
 export type JournalPostDoc = {
   /** kebab-case slug, also the document ID. */
@@ -44,30 +44,9 @@ export type JournalPostDoc = {
 };
 
 /**
- * Convert the legacy JSON section blocks (lib/journal.ts) into Markdown.
- * Used by the one-off migration script and as a reference for any future
- * import from the same shape.
- */
-export function sectionsToMarkdown(sections: JournalSection[]): string {
-  return sections
-    .map((s) => {
-      switch (s.type) {
-        case "h2":
-          return `## ${s.text}`;
-        case "p":
-          return s.text;
-        case "ul":
-          return s.items.map((it) => `- ${it}`).join("\n");
-        case "quote":
-          return `> ${s.text}`;
-      }
-    })
-    .join("\n\n");
-}
-
-/**
- * Parse a "2026.04.27" date string into a millis-since-epoch timestamp.
- * Used during migration to seed publishedAt from the existing display date.
+ * Parse a "2026.04.27" display date string into a millis-since-epoch timestamp.
+ * Used by the admin save action to keep `publishedAt` in sync with the
+ * editor-facing `date` field.
  */
 export function dateStringToMillis(date: string): number {
   const [y, m, d] = date.split(".").map((n) => parseInt(n, 10));

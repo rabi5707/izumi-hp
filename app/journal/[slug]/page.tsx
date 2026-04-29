@@ -1,47 +1,41 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { SERVICE_LABELS } from "@/lib/journal";
 import {
-  JOURNAL_POSTS,
-  getPost,
-  getRelatedPosts,
-  SERVICE_LABELS,
-  type JournalSection,
-} from "@/lib/journal";
+  fetchAllPublishedPosts,
+  fetchPostBySlug,
+  fetchRelatedPosts,
+} from "@/lib/journal-server";
 import { breadcrumbLd, orgRef, jsonLdScript } from "@/lib/seo";
 import { LEGAL_INFO } from "@/lib/legal";
 
 const SITE_URL = LEGAL_INFO.shopUrl.replace(/\/$/, "");
 
-function countWords(post: { body?: JournalSection[]; lede: string }) {
-  let chars = post.lede.length;
-  for (const sec of post.body ?? []) {
-    if (sec.type === "p" || sec.type === "h2" || sec.type === "quote") {
-      chars += sec.text.length;
-    } else if (sec.type === "ul") {
-      for (const it of sec.items) chars += it.length;
-    }
-  }
-  return chars;
+// Build-time SSG for known slugs, with on-demand ISR for new posts.
+export const revalidate = 60;
+export const dynamicParams = true;
+
+export async function generateStaticParams() {
+  const posts = await fetchAllPublishedPosts();
+  return posts.map((p) => ({ slug: p.slug }));
 }
 
-export function generateStaticParams() {
-  return JOURNAL_POSTS.map((p) => ({ slug: p.slug }));
-}
-
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
-}): Metadata {
-  const post = getPost(params.slug);
+}): Promise<Metadata> {
+  const post = await fetchPostBySlug(params.slug);
   if (!post) return {};
   const isoDate = post.date.replaceAll(".", "-");
   const canonical = `${SITE_URL}/journal/${post.slug}`;
   return {
     title: `${post.ja}　｜　株式会社イズミ産業`,
     description: post.lede.slice(0, 140),
-    keywords: [post.cat, post.tag, ...(post.tags ?? [])],
+    keywords: [post.cat, post.tag, ...post.tags],
     alternates: { canonical },
     openGraph: {
       title: post.ja,
@@ -55,90 +49,20 @@ export function generateMetadata({
   };
 }
 
-function renderSection(sec: JournalSection, i: number) {
-  switch (sec.type) {
-    case "h2":
-      return (
-        <h2
-          key={i}
-          className="kanji-h"
-          style={{
-            fontSize: 22,
-            marginTop: 48,
-            marginBottom: 16,
-            letterSpacing: "0.14em",
-          }}
-        >
-          {sec.text}
-        </h2>
-      );
-    case "p":
-      return (
-        <p
-          key={i}
-          style={{
-            fontSize: 15,
-            lineHeight: 2.2,
-            color: "var(--ink-soft)",
-            margin: "0 0 20px",
-          }}
-        >
-          {sec.text}
-        </p>
-      );
-    case "ul":
-      return (
-        <ul
-          key={i}
-          style={{
-            margin: "0 0 24px",
-            paddingLeft: 20,
-            fontSize: 14,
-            lineHeight: 2.1,
-            color: "var(--ink-soft)",
-          }}
-        >
-          {sec.items.map((it, j) => (
-            <li key={j} style={{ marginBottom: 6 }}>
-              {it}
-            </li>
-          ))}
-        </ul>
-      );
-    case "quote":
-      return (
-        <blockquote
-          key={i}
-          style={{
-            margin: "32px 0",
-            padding: "20px 28px",
-            borderLeft: "2px solid var(--accent)",
-            background: "var(--paper)",
-            fontFamily: "var(--f-heading)",
-            fontSize: 16,
-            letterSpacing: "0.12em",
-            lineHeight: 2,
-            color: "var(--ink-soft)",
-          }}
-        >
-          {sec.text}
-        </blockquote>
-      );
-  }
-}
-
-export default function JournalArticle({
+export default async function JournalArticle({
   params,
 }: {
   params: { slug: string };
 }) {
-  const post = getPost(params.slug);
+  const post = await fetchPostBySlug(params.slug);
   if (!post) notFound();
 
-  const related = getRelatedPosts(post.slug, 3);
+  const related = await fetchRelatedPosts(post.slug, 3);
 
   const isoDate = post.date.replaceAll(".", "-");
   const canonical = `${SITE_URL}/journal/${post.slug}`;
+  const wordCount = post.lede.length + post.body.length;
+
   const articleLd = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -149,8 +73,8 @@ export default function JournalArticle({
     dateModified: isoDate,
     inLanguage: "ja",
     articleSection: post.cat,
-    keywords: [post.cat, post.tag, ...(post.tags ?? [])].join(", "),
-    wordCount: countWords(post),
+    keywords: [post.cat, post.tag, ...post.tags].join(", "),
+    wordCount,
     image: [`${SITE_URL}/images/journal/${post.slug}.jpg`],
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
     author: orgRef,
@@ -259,9 +183,11 @@ export default function JournalArticle({
           {post.read}
         </div>
 
-        <div style={{ paddingTop: 24 }}>
+        <div className="journal-md" style={{ paddingTop: 24 }}>
           {post.body ? (
-            post.body.map((sec, i) => renderSection(sec, i))
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {post.body}
+            </ReactMarkdown>
           ) : (
             <p
               style={{

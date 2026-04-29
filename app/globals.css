@@ -744,6 +744,66 @@ main[data-section="shop"] .hero-visual::before {
   border-radius: 2px;
   vertical-align: middle;
 }
+
+/* Markdown body styling for journal articles. Mirrors the look of the
+   former hand-rolled section renderer (h2 / p / ul / blockquote). */
+.journal-md h2 {
+  font-family: var(--f-heading);
+  font-size: 22px;
+  letter-spacing: 0.14em;
+  margin: 48px 0 16px;
+}
+.journal-md h3 {
+  font-family: var(--f-heading);
+  font-size: 17px;
+  letter-spacing: 0.12em;
+  margin: 32px 0 12px;
+}
+.journal-md p {
+  font-size: 15px;
+  line-height: 2.2;
+  color: var(--ink-soft);
+  margin: 0 0 20px;
+}
+.journal-md ul,
+.journal-md ol {
+  margin: 0 0 24px;
+  padding-left: 20px;
+  font-size: 14px;
+  line-height: 2.1;
+  color: var(--ink-soft);
+}
+.journal-md li {
+  margin-bottom: 6px;
+}
+.journal-md blockquote {
+  margin: 32px 0;
+  padding: 20px 28px;
+  border-left: 2px solid var(--accent);
+  background: var(--paper);
+  font-family: var(--f-heading);
+  font-size: 16px;
+  letter-spacing: 0.12em;
+  line-height: 2;
+  color: var(--ink-soft);
+}
+.journal-md blockquote p {
+  margin: 0;
+}
+.journal-md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.journal-md strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.journal-md hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+  margin: 40px 0;
+}
 @media (max-width: 720px) {
   .section-indicator {
     flex-wrap: wrap;

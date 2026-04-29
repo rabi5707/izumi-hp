@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { JOURNAL_POSTS } from "@/lib/journal";
+import { fetchAllPublishedPosts } from "@/lib/journal-server";
 import { PRODUCTS } from "@/lib/products";
 import { AREAS } from "@/lib/areas";
 import { LEGAL_INFO } from "@/lib/legal";
@@ -33,7 +33,7 @@ const SERVICE_FILTERS: ("frozen" | "bento" | "catering" | "common")[] = [
   "common",
 ];
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((r) => ({
@@ -57,7 +57,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.7,
   }));
 
-  const articles: MetadataRoute.Sitemap = JOURNAL_POSTS.map((p) => ({
+  const posts = await fetchAllPublishedPosts();
+  const articles: MetadataRoute.Sitemap = posts.map((p) => ({
     url: `${BASE}/journal/${p.slug}`,
     lastModified: new Date(p.date.replaceAll(".", "-")),
     changeFrequency: "yearly",
