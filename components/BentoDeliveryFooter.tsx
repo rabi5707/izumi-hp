@@ -72,10 +72,10 @@ export function BentoDeliveryFooter() {
           </div>
 
           <SmartImage
-            src="/images/catering/hiromi-building.jpg"
-            alt="株式会社イズミ産業 横浜本社"
-            labelEn="IMG / honsha"
-            labelJa="横浜本社"
+            src="/images/portal-storefront.jpg"
+            alt="株式会社イズミ産業 横浜本社（外観）"
+            labelEn="IMG / honsha-gaikan"
+            labelJa="横浜本社 外観"
             aspect="1/1"
             style={{ width: 140 }}
           />
