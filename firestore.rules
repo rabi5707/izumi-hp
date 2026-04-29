@@ -31,6 +31,14 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // 読み物（journal）。サーバー側 (Admin SDK) で読み取り→ ISR でキャッシュ
+    // するため、クライアントからの直接アクセスは公開済みのみ許可。
+    // 編集は Admin SDK 経由（`/admin/journal` UI）のみ。
+    match /journal_posts/{slug} {
+      allow read: if resource.data.published == true;
+      allow write: if false;
+    }
+
     // ===== その他は全拒否 =====
     match /{document=**} {
       allow read, write: if false;

@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "migrate:journal": "tsx --env-file=.env.local scripts/migrate-journal-to-firestore.ts"
   },
   "dependencies": {
     "next": "^14.2.18",
@@ -28,6 +29,7 @@
     "postcss": "^8.4.49",
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.1",
-    "eslint-config-next": "^14.2.18"
+    "eslint-config-next": "^14.2.18",
+    "tsx": "^4.19.2"
   }
 }
