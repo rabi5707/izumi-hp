@@ -14,9 +14,8 @@ export function BentoDeliveryFooter() {
       <div className="shell">
         {/* Main info */}
         <div
+          className="r-hero-split-wide"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.1fr auto",
             gap: 32,
             alignItems: "flex-start",
             marginBottom: 32,
@@ -84,13 +83,12 @@ export function BentoDeliveryFooter() {
 
         {/* Return links to other sections */}
         <div
+          className="r-grid-2"
           style={{
             padding: "24px 28px",
             background: "var(--bg)",
             border: "1px solid var(--rule)",
             marginBottom: 24,
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
             gap: 20,
           }}
         >

@@ -773,9 +773,10 @@ export default function Portal() {
                 marginTop: 32,
                 padding: "20px 24px",
                 border: "1px solid rgba(255,255,255,0.15)",
-                display: "grid",
-                gridTemplateColumns: "1fr auto",
+                display: "flex",
+                flexWrap: "wrap",
                 alignItems: "center",
+                justifyContent: "space-between",
                 gap: 20,
               }}
             >

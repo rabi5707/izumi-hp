@@ -13,9 +13,8 @@ export function CateringFooter() {
     >
       <div className="shell">
         <div
+          className="r-hero-split-wide"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1.2fr 1fr",
             gap: 48,
             alignItems: "center",
             marginBottom: 40,
@@ -174,9 +173,10 @@ export function CateringFooter() {
         {/* Prominent back-to-shop panel */}
         <div
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr auto",
+            display: "flex",
+            flexWrap: "wrap",
             alignItems: "center",
+            justifyContent: "space-between",
             gap: 24,
             padding: "20px 24px",
             background: "var(--bg)",

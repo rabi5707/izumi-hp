@@ -1184,7 +1184,15 @@ button:disabled:hover, .btn:disabled:hover { transform: none; filter: none; }
 @media (max-width: 600px) {
   .prod-grid { grid-template-columns: 1fr; }
   .cats { grid-template-columns: 1fr; }
-  .stat-bar { grid-template-columns: 1fr; }
+  /* Keep stat-bar 2-column on small screens — collapsing to 1fr makes it
+     extremely tall (5+ items stacked = 300px+). */
+  .stat-bar { grid-template-columns: repeat(2, 1fr); }
+  .stat-bar > div { padding: 12px 14px; }
+  .stat-bar .stat-value { font-size: 14px; }
   .site-footer .grid { grid-template-columns: 1fr; gap: 28px; }
   .time-pick { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* Site-wide overflow guard — prevents horizontal scroll if any inline-styled
+   element accidentally extends beyond the viewport on mobile. */
+html, body { overflow-x: hidden; }
