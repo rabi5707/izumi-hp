@@ -118,10 +118,10 @@ export function CateringFooter() {
             }}
           >
             <SmartImage
-              src="/images/catering/hiromi-building.jpg"
-              alt="日本料理 広美"
-              labelEn="IMG / hiromi"
-              labelJa="日本料理 広美"
+              src="/images/ginsentei-banquet.jpg"
+              alt="料亭 横浜銀泉亭"
+              labelEn="IMG / ginsentei"
+              labelJa="料亭 横浜銀泉亭"
               aspect="1/1"
               style={{ width: 120 }}
             />
@@ -140,7 +140,7 @@ export function CateringFooter() {
                   marginBottom: 10,
                 }}
               >
-                日本料理 広美
+                料亭 横浜銀泉亭
               </div>
               <p
                 style={{

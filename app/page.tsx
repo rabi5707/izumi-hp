@@ -822,9 +822,9 @@ export default function Portal() {
 
           <SmartImage
             src="/images/portal-hiromi.jpg"
-            alt="日本料理 広美 — 宴会場"
-            labelEn="IMG / hiromi"
-            labelJa="日本料理 広美"
+            alt="料亭 横浜銀泉亭 — 宴会場"
+            labelEn="IMG / ginsentei"
+            labelJa="料亭 横浜銀泉亭"
             aspect="4/5"
           />
         </div>

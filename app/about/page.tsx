@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 const OFFICES = [
   {
-    name: "横浜本店　／　日本料理 広美",
+    name: "横浜本店　／　料亭 横浜銀泉亭",
     addr: "〒240-0044　神奈川県横浜市保土ヶ谷区仏向町 946",
     tel: "045-333-0163",
     fax: "045-333-1133",
@@ -52,7 +52,7 @@ const SCOPE = [
     n: "03",
     ja: "宴会場でのご会食",
     en: "BANQUET HALL",
-    d: "団体様向け宴会施設「日本料理 広美」でのご会食は、本社サイト「施設のご紹介」よりお申込みください。飛天の間・最上の間・古都の間・特別個室をご用意しております。",
+    d: "団体様向け宴会施設「料亭 横浜銀泉亭」でのご会食は、本社サイト「施設のご紹介」よりお申込みください。飛天の間・最上の間・古都の間・特別個室をご用意しております。",
   },
 ];
 
@@ -100,7 +100,7 @@ export default function AboutPage() {
               }}
             >
               ※
-              会社案内・宴会場「日本料理 広美」のご案内・採用情報等は、本社コーポレートサイトをご覧ください。
+              会社案内・宴会場「料亭 横浜銀泉亭」のご案内・採用情報等は、本社コーポレートサイトをご覧ください。
             </span>
           </p>
           <div
@@ -126,7 +126,7 @@ export default function AboutPage() {
         </div>
         <div className="ph" style={{ aspectRatio: "4/5", minHeight: 480 }}>
           <div className="ph-label">IMG / honsha-gaikan</div>
-          <div className="ph-center">横浜本社・日本料理 広美</div>
+          <div className="ph-center">横浜本社・料亭 横浜銀泉亭</div>
         </div>
       </div>
 
@@ -218,7 +218,7 @@ export default function AboutPage() {
                 maxWidth: 520,
               }}
             >
-              会社概要、横浜本社のご案内、日本料理「広美」施設のご紹介、採用情報、各種お問合せは、本社コーポレートサイトに掲載しております。
+              会社概要、横浜本社のご案内、料亭「横浜銀泉亭」施設のご紹介、採用情報、各種お問合せは、本社コーポレートサイトに掲載しております。
             </p>
           </div>
           <div className="cc-links">
@@ -280,7 +280,7 @@ export default function AboutPage() {
             <tr>
               <th>事業内容</th>
               <td>
-                冠婚葬祭料理ケータリングサービス（寿司・和食・洋食）／ 仕出し及び各種出張パーティ ／ 日本料理「広美」（団体様向け宴会施設）
+                冠婚葬祭料理ケータリングサービス（寿司・和食・洋食）／ 仕出し及び各種出張パーティ ／ 料亭「横浜銀泉亭」（団体様向け宴会施設）
               </td>
             </tr>
             <tr>
