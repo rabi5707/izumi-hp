@@ -1172,7 +1172,10 @@ button:disabled:hover, .btn:disabled:hover { transform: none; filter: none; }
   .voice { border-right: 0; border-bottom: 1px solid var(--rule); }
   .site-footer .grid { grid-template-columns: 1fr 1fr; }
   .features { grid-template-columns: 1fr; }
-  .stat-bar { grid-template-columns: repeat(2, 1fr); }
+  /* The base .stat-bar uses `grid-auto-flow: column` which creates implicit
+     columns per item. We must override to `row` flow before `grid-template-columns`
+     can take effect on mobile. */
+  .stat-bar { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); }
   .corp-cta .cc-inner { grid-template-columns: 1fr; gap: 24px; }
   .corp-cta .cc-links { grid-template-columns: 1fr; }
   .form-grid { grid-template-columns: 1fr; gap: 16px; }
@@ -1185,8 +1188,10 @@ button:disabled:hover, .btn:disabled:hover { transform: none; filter: none; }
   .prod-grid { grid-template-columns: 1fr; }
   .cats { grid-template-columns: 1fr; }
   /* Keep stat-bar 2-column on small screens — collapsing to 1fr makes it
-     extremely tall (5+ items stacked = 300px+). */
-  .stat-bar { grid-template-columns: repeat(2, 1fr); }
+     extremely tall (5+ items stacked = 300px+). Override auto-flow too,
+     otherwise the base `grid-auto-flow: column` creates implicit columns
+     and ignores the 2-col template. */
+  .stat-bar { grid-auto-flow: row; grid-template-columns: repeat(2, 1fr); }
   .stat-bar > div { padding: 12px 14px; }
   .stat-bar .stat-value { font-size: 14px; }
   .site-footer .grid { grid-template-columns: 1fr; gap: 28px; }
