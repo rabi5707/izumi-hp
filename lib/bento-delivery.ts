@@ -142,8 +142,8 @@ export type TrustBadge = { icon: string; title: string; body: string };
 export const TRUST_BADGES: TrustBadge[] = [
   {
     icon: "clock",
-    title: "前日17時までで翌日お届け",
-    body: "(当日注文も可能な限り対応)",
+    title: "ご希望日の2日前17時までにご注文",
+    body: "(お急ぎの場合はお電話にてご相談ください)",
   },
   {
     icon: "van",
@@ -171,12 +171,17 @@ export const SERVICE_INFO = [
   {
     icon: "clock",
     label: "納期",
-    body: "前日17時までで翌日お届け\n当日注文も可能な限り対応",
+    body: "ご希望日の2日前17時までにご注文\nお急ぎの場合はお電話にてご相談ください",
   },
   {
     icon: "box",
     label: "容器について",
     body: "使い捨てまたは簡易容器でお届け。\n回収・引取はいたしません。\nそのまま破棄いただけます。",
+  },
+  {
+    icon: "yen",
+    label: "お支払い",
+    body: "銀行振込（前払い／後日一括）\nまたは当日現金にて承ります。",
   },
 ];
 

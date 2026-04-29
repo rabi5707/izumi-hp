@@ -180,6 +180,112 @@ export default function CateringGuide() {
         </p>
       </section>
 
+      {/* Payment */}
+      <section className="shell" style={{ padding: "48px 40px" }}>
+        <div style={{ textAlign: "center", marginBottom: 28 }}>
+          <h2
+            className="kanji-display"
+            style={{
+              fontSize: 26,
+              margin: "0 0 12px",
+              letterSpacing: "0.14em",
+            }}
+          >
+            お支払いについて
+          </h2>
+          <p
+            style={{
+              fontSize: 12,
+              color: "var(--ink-soft)",
+              letterSpacing: "0.08em",
+            }}
+          >
+            銀行振込または当日現金にて承ります。請求書をご入用の場合はお申し付けください。
+          </p>
+        </div>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(2, 1fr)",
+            gap: 20,
+            maxWidth: 880,
+            margin: "0 auto",
+          }}
+        >
+          <div
+            style={{
+              padding: "24px 28px",
+              border: "1px solid var(--rule)",
+              background: "var(--bg)",
+            }}
+          >
+            <div
+              className="kanji-h"
+              style={{
+                fontSize: 16,
+                letterSpacing: "0.14em",
+                marginBottom: 10,
+                color: "#4a7c4a",
+              }}
+            >
+              銀行振込
+            </div>
+            <p
+              style={{
+                fontSize: 12,
+                color: "var(--ink-soft)",
+                lineHeight: 1.9,
+                margin: 0,
+              }}
+            >
+              前払いまたはお届け後の一括払いに対応いたします。
+              法人様のご請求書発行も承ります（インボイス対応）。
+            </p>
+          </div>
+          <div
+            style={{
+              padding: "24px 28px",
+              border: "1px solid var(--rule)",
+              background: "var(--bg)",
+            }}
+          >
+            <div
+              className="kanji-h"
+              style={{
+                fontSize: 16,
+                letterSpacing: "0.14em",
+                marginBottom: 10,
+                color: "#2c4a6b",
+              }}
+            >
+              当日現金
+            </div>
+            <p
+              style={{
+                fontSize: 12,
+                color: "var(--ink-soft)",
+                lineHeight: 1.9,
+                margin: 0,
+              }}
+            >
+              お届け当日、配達スタッフへ直接お支払いいただけます。
+              領収書をその場で発行いたします。
+            </p>
+          </div>
+        </div>
+        <p
+          style={{
+            textAlign: "center",
+            fontSize: 11,
+            color: "var(--ink-mute)",
+            letterSpacing: "0.08em",
+            marginTop: 20,
+          }}
+        >
+          ※ お支払い方法のご希望は、お見積時にお知らせください。
+        </p>
+      </section>
+
       {/* FAQ */}
       <section className="shell" style={{ padding: "48px 40px" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>

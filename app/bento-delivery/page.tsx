@@ -15,7 +15,7 @@ import { breadcrumbLd, jsonLdScript } from "@/lib/seo";
 export const metadata: Metadata = {
   title: "お届け弁当　｜　横浜近郊への当日便配達　¥20,000より承ります",
   description:
-    "横浜近郊の法人様・ご家庭へお届けする会合弁当・ロケ弁・ホームパーティーセット。配膳・回収なしのシンプルなお届けサービス。前日17時までのご注文で翌日お届け、当日便も可能な限りご対応致します。",
+    "横浜近郊の法人様・ご家庭へお届けする会合弁当・ロケ弁・ホームパーティーセット。配膳・回収なしのシンプルなお届けサービス。ご希望日の2日前17時までにご注文ください。お急ぎの場合はお電話にてご相談くださいませ。",
   alternates: { canonical: "https://shop.isg.co.jp/bento-delivery" },
 };
 
@@ -41,10 +41,10 @@ const faqLd = {
     },
     {
       "@type": "Question",
-      name: "当日のご注文は可能ですか？",
+      name: "ご注文はいつまでに必要ですか？",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "前日17時までのご注文を基本としておりますが、当日便も可能な限りお応え致します。お電話にてお席のご状況をお聞かせくださいませ。",
+        text: "ご希望日の2日前17時までを基本としております。お急ぎの場合もまずはお電話にてご相談くださいませ。仕入れの段取りが付き次第、可能な限りお応え致します。",
       },
     },
     {
@@ -65,10 +65,10 @@ const faqLd = {
     },
     {
       "@type": "Question",
-      name: "ご請求書払い・月次精算は可能ですか？",
+      name: "お支払い方法は何が選べますか？",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "法人様のご請求書払い・月次まとめ精算にもご対応致しております。適格請求書（インボイス）も発行可能です。詳細はお見積時にご相談くださいませ。",
+        text: "銀行振込（前払いまたは後日一括）または当日現金にて承ります。法人様にはお届け後のお振込みもご相談に応じます。適格請求書（インボイス）も発行可能です。",
       },
     },
   ],
@@ -225,7 +225,7 @@ export default function BentoDeliveryHome() {
           </div>
           <div>
             <span className="stat-label">納期</span>
-            <span className="stat-value">前日17時まで・翌日お届け</span>
+            <span className="stat-value">2日前17時までにご注文</span>
           </div>
           <div>
             <span className="stat-label">対応エリア</span>
@@ -695,7 +695,7 @@ export default function BentoDeliveryHome() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
+            gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))",
             gap: 20,
           }}
         >

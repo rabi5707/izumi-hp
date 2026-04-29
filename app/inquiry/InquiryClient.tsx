@@ -19,6 +19,7 @@ type FormState = {
   addr: string;
   menu: string;
   service: string[]; // catering options: 配膳, 器引取, 飲物手配
+  payment: string; // 銀行振込 / 当日現金 / 未定
   notes: string;
 };
 
@@ -36,6 +37,7 @@ const defaultForm: FormState = {
   addr: "",
   menu: "",
   service: [],
+  payment: "",
   notes: "",
 };
 
@@ -447,6 +449,43 @@ export function InquiryClient() {
                 </button>
               ))}
             </div>
+          </div>
+          <div style={{ marginTop: 24 }}>
+            <label
+              className="label-ja"
+              style={{
+                display: "block",
+                marginBottom: 12,
+                fontSize: 11,
+                letterSpacing: "0.2em",
+              }}
+            >
+              お支払い方法のご希望
+            </label>
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
+              {["銀行振込", "当日現金", "未定・ご相談"].map((p) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={"chip" + (data.payment === p ? " on" : "")}
+                  onClick={() => upd("payment", p)}
+                  style={{
+                    padding: "8px 14px",
+                    fontFamily: "var(--f-heading)",
+                    fontSize: 12,
+                    letterSpacing: "0.1em",
+                  }}
+                >
+                  {p}
+                </button>
+              ))}
+            </div>
+            <span
+              className="hint"
+              style={{ display: "block", marginTop: 8 }}
+            >
+              請求書発行・インボイス対応も承ります
+            </span>
           </div>
         </div>
 
