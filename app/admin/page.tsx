@@ -2,6 +2,7 @@ import Link from "next/link";
 import { requireAdmin } from "@/lib/admin-auth";
 import { fetchAllPostsForAdmin } from "@/lib/journal-server";
 import { fetchAllProductsForAdmin } from "@/lib/products-server";
+import { fetchAllInquiries } from "@/lib/inquiries-server";
 
 export const dynamic = "force-dynamic";
 
@@ -9,9 +10,10 @@ export default async function AdminDashboard() {
   const user = await requireAdmin();
 
   // それぞれの管理対象の件数を一目で把握できるように軽くサマリー。
-  const [posts, products] = await Promise.all([
+  const [posts, products, inquiries] = await Promise.all([
     fetchAllPostsForAdmin().catch(() => []),
     fetchAllProductsForAdmin().catch(() => []),
+    fetchAllInquiries().catch(() => []),
   ]);
 
   const journalSummary = {
@@ -23,6 +25,11 @@ export default async function AdminDashboard() {
     total: products.length,
     published: products.filter((p) => p.published).length,
     draft: products.filter((p) => !p.published).length,
+  };
+  const inquirySummary = {
+    total: inquiries.length,
+    unread: inquiries.filter((q) => q.status === "new").length,
+    handled: inquiries.filter((q) => q.status === "handled").length,
   };
 
   return (
@@ -65,6 +72,57 @@ export default async function AdminDashboard() {
         編集なさりたい項目をお選びください。
       </p>
 
+      {inquirySummary.unread > 0 && (
+        <div
+          style={{
+            background: "#fff8f0",
+            border: "1px solid #d4b3b3",
+            padding: "16px 20px",
+            marginBottom: 24,
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            gap: 16,
+            flexWrap: "wrap",
+          }}
+        >
+          <div>
+            <div
+              style={{
+                fontFamily: "var(--f-mono)",
+                fontSize: 10,
+                letterSpacing: "0.28em",
+                color: "#8a2e2e",
+                marginBottom: 4,
+              }}
+            >
+              UNREAD INQUIRIES
+            </div>
+            <div style={{ fontSize: 14, color: "#1a1613" }}>
+              未読のお問合せが{" "}
+              <span style={{ fontWeight: 700, color: "#8a2e2e" }}>
+                {inquirySummary.unread}件
+              </span>{" "}
+              ございます。
+            </div>
+          </div>
+          <Link
+            href="/admin/inquiries"
+            style={{
+              padding: "10px 18px",
+              background: "#8a2e2e",
+              color: "#fff",
+              textDecoration: "none",
+              fontFamily: "var(--f-heading)",
+              fontSize: 12,
+              letterSpacing: "0.16em",
+            }}
+          >
+            お問合せを確認
+          </Link>
+        </div>
+      )}
+
       <div
         style={{
           display: "grid",
@@ -72,6 +130,15 @@ export default async function AdminDashboard() {
           gap: 20,
         }}
       >
+        <Card
+          tag="INQUIRIES"
+          ja="お問合せ・お見積依頼"
+          desc="お客様からの /inquiry 送信をこちらでご確認ください。状態の切替（既読・対応済・完了）と社内メモも残せます。"
+          summary={`全${inquirySummary.total}件 · 未読${inquirySummary.unread} · 対応済${inquirySummary.handled}`}
+          href="/admin/inquiries"
+          primaryHref="/admin/inquiries"
+          primaryLabel="一覧を開く"
+        />
         <Card
           tag="PRODUCTS"
           ja="冷凍折詰 商品"

@@ -220,8 +220,11 @@ C:\APP\HP\
 ├── /legal/tokusho, privacy, terms
 ├── /inquiry                  共通お見積フォーム
 │
-├── /admin                    → /admin/journal にリダイレクト
+├── /admin                    管理ダッシュボード（カード式・各管理ページへの入口）
 ├── /admin/login              管理画面ログイン
+├── /admin/products           冷凍折詰 商品の一覧・公開切替・並び順
+├── /admin/products/new       新規商品登録（画像 upload 含む）
+├── /admin/products/[id]/edit 商品編集（画像差替含む）
 ├── /admin/journal            記事の一覧・公開状態切替
 ├── /admin/journal/new        新規記事
 ├── /admin/journal/[slug]/edit 記事編集（カバー画像 upload 含む）

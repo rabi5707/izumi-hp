@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { LogoutButton } from "./LogoutButton";
 import { getAdminUser } from "@/lib/admin-auth";
+import { countUnreadInquiries } from "@/lib/inquiries-server";
 
 export const metadata = {
   title: "管理画面 | 株式会社イズミ産業",
@@ -13,6 +14,7 @@ export default async function AdminLayout({
   children: React.ReactNode;
 }) {
   const user = await getAdminUser();
+  const unread = user ? await countUnreadInquiries().catch(() => 0) : 0;
 
   return (
     <div
@@ -41,6 +43,36 @@ export default async function AdminLayout({
               style={{ color: "#fff", textDecoration: "none" }}
             >
               ホーム
+            </Link>
+            <Link
+              href="/admin/inquiries"
+              style={{
+                color: "#fff",
+                textDecoration: "none",
+                display: "flex",
+                alignItems: "center",
+                gap: 6,
+              }}
+            >
+              お問合せ
+              {unread > 0 && (
+                <span
+                  style={{
+                    display: "inline-block",
+                    minWidth: 18,
+                    padding: "1px 6px",
+                    background: "#8a2e2e",
+                    color: "#fff",
+                    fontSize: 10,
+                    letterSpacing: 0,
+                    borderRadius: 9,
+                    textAlign: "center",
+                    fontFamily: "var(--f-mono)",
+                  }}
+                >
+                  {unread}
+                </span>
+              )}
             </Link>
             <Link
               href="/admin/products"
