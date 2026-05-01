@@ -20,6 +20,10 @@ service firebase.storage {
       allow read: if true;
       allow write: if false;
     }
+    match /product-images/{file=**} {
+      allow read: if true;
+      allow write: if false;
+    }
     match /uploads/{file=**} {
       allow read: if true;
       allow write: if false;

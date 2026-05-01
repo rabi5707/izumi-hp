@@ -48,6 +48,12 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // 商品（products / 冷凍折詰）。journal と同じく Admin SDK 経由のみ書込。
+    match /products/{id} {
+      allow read: if resource.data.published == true;
+      allow write: if false;
+    }
+
     // ===== その他は全拒否 =====
     match /{document=**} {
       allow read, write: if false;

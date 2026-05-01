@@ -35,7 +35,19 @@ export default async function AdminLayout({
             letterSpacing: "0.22em",
           }}
         >
-          <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+          <div style={{ display: "flex", gap: 24, alignItems: "center", flexWrap: "wrap" }}>
+            <Link
+              href="/admin"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              ホーム
+            </Link>
+            <Link
+              href="/admin/products"
+              style={{ color: "#fff", textDecoration: "none" }}
+            >
+              商品
+            </Link>
             <Link
               href="/admin/journal"
               style={{ color: "#fff", textDecoration: "none" }}
@@ -49,7 +61,7 @@ export default async function AdminLayout({
               画像庫
             </Link>
             <Link
-              href="/journal"
+              href="/"
               target="_blank"
               style={{ color: "#b8924c", textDecoration: "none" }}
             >

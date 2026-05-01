@@ -9,7 +9,7 @@
 import { NextResponse } from "next/server";
 import { getStripe } from "@/lib/stripe";
 import { getAdminDb } from "@/lib/firebase-admin";
-import { PRODUCTS } from "@/lib/products";
+import { fetchProductForCheckout } from "@/lib/products-server";
 import type { DeliveryData } from "@/lib/cart-store";
 
 export const runtime = "nodejs";
@@ -36,8 +36,8 @@ function genOrderNo() {
   return "IZ-" + String(Math.floor(Math.random() * 900000) + 100000);
 }
 
-/** Resolve client cart items against trusted PRODUCTS master. Throws on bad input. */
-function resolveCart(raw: unknown) {
+/** Resolve client cart items against trusted Firestore product master. Throws on bad input. */
+async function resolveCart(raw: unknown) {
   if (!Array.isArray(raw) || raw.length === 0) {
     throw new Error("カートが空でございます。");
   }
@@ -64,7 +64,7 @@ function resolveCart(raw: unknown) {
     freeze: boolean;
   }> = [];
   for (const [id, qty] of map) {
-    const product = PRODUCTS.find((p) => p.id === id && p.type === "ec");
+    const product = await fetchProductForCheckout(id);
     if (!product) {
       throw new Error(`商品「${id}」は取り扱いがございません。`);
     }
@@ -128,10 +128,10 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "invalid json" }, { status: 400 });
   }
 
-  let lines: ReturnType<typeof resolveCart>;
+  let lines: Awaited<ReturnType<typeof resolveCart>>;
   let delivery: DeliveryData;
   try {
-    lines = resolveCart(body.cart);
+    lines = await resolveCart(body.cart);
     delivery = sanitizeDelivery(body.delivery);
   } catch (e) {
     const msg = e instanceof Error ? e.message : "invalid request";
