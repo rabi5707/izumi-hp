@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { SmartImage } from "@/components/SmartImage";
 
 export const metadata: Metadata = {
   title: "このサイトについて　｜　株式会社イズミ産業 オンライン御注文",
@@ -124,10 +125,13 @@ export default function AboutPage() {
             </Link>
           </div>
         </div>
-        <div className="ph" style={{ aspectRatio: "4/5", minHeight: 480 }}>
-          <div className="ph-label">IMG / honsha-gaikan</div>
-          <div className="ph-center">横浜本社・料亭 横浜銀泉亭</div>
-        </div>
+        <SmartImage
+          src="/images/portal-storefront.jpg"
+          alt="株式会社イズミ産業 横浜本社（外観）"
+          labelEn="IMG / honsha-gaikan"
+          labelJa="横浜本社・料亭 横浜銀泉亭"
+          aspect="4/5"
+        />
       </div>
 
       <div className="about-scope">
