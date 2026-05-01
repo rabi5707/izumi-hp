@@ -113,8 +113,17 @@ export function breadcrumbLd(items: Crumb[]) {
 }
 
 export function jsonLdScript(data: unknown) {
+  // `</` を含む文字列が JSON 値に紛れ込むと script タグから抜け出されてしまう。
+  // `<` に置換して script コンテキスト脱出を防ぐ。
+  // 加えて U+2028/U+2029 もブラウザの旧パーサ実装に合わせて escape する。
+  const safe = JSON.stringify(data)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026")
+    .replace(new RegExp("\\u2028", "g"), "\\u2028")
+    .replace(new RegExp("\\u2029", "g"), "\\u2029");
   return {
     type: "application/ld+json" as const,
-    dangerouslySetInnerHTML: { __html: JSON.stringify(data) },
+    dangerouslySetInnerHTML: { __html: safe },
   };
 }

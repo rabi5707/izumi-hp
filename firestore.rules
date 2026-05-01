@@ -3,22 +3,31 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // 管理者判定ヘルパー。
+    // Firebase Auth のメール/パスワード自己サインアップが有効になっている場合、
+    // `request.auth != null` だけだと「適当に登録した第三者」も書き込めてしまう。
+    // そのため `admin: true` の Custom Claim を持つユーザーのみ許可する。
+    // Claim 付与は Admin SDK で `auth.setCustomUserClaims(uid, { admin: true })`。
+    function isAdmin() {
+      return request.auth != null && request.auth.token.admin == true;
+    }
+
     // ===== izumi-menu 系（QR閲覧 + admin編集） =====
     match /menus/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /banquet_menus/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /plans/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
     match /events/{id} {
       allow read: if true;
-      allow write: if request.auth != null;
+      allow write: if isAdmin();
     }
 
     // ===== izumi-hp 系（Admin SDK 経由のみ） =====

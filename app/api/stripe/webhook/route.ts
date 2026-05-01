@@ -75,9 +75,17 @@ export async function POST(req: Request) {
         break;
     }
   } catch (e) {
-    console.error("[stripe webhook] handler error", e);
-    // Respond 200 so Stripe does not retry indefinitely on Firestore outages;
-    // log for manual reconciliation.
+    // Firestore 書込失敗時は 500 を返し Stripe にリトライさせる。
+    // Webhook 配信履歴は Stripe Dashboard で確認可能。
+    console.error("[stripe webhook] handler error", {
+      type: event.type,
+      id: event.id,
+      err: e,
+    });
+    return NextResponse.json(
+      { error: "handler failed", eventId: event.id },
+      { status: 500 }
+    );
   }
 
   return NextResponse.json({ received: true });

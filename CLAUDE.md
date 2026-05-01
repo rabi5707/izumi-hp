@@ -13,7 +13,7 @@
 - 管理画面: `/admin/journal`（読み物編集）/ `/admin/images`（画像庫）
 - デプロイ先: Vercel (`rabi5707's projects` / Hobby プラン)
 - 自動デプロイ: GitHub `main` への push で自動再ビルド
-- Basic 認証: ID `hiromi` / PW `isg0163`（一般公開時に env vars を空にして無効化）
+- Basic 認証: 認証情報は Vercel の環境変数 `BASIC_AUTH_USER` / `BASIC_AUTH_PASSWORD` を参照（一般公開時に env vars を空にして無効化）。**認証情報は Vercel ダッシュボードと 1Password 等のシークレット管理に限定し、コードや CLAUDE.md には書かない**
 - 管理画面ログイン: `yamaizumi@isg.co.jp` + Firebase Auth パスワード（izumi-menu と共通）
 - Firebase 接続済（`/inquiry` → Firestore、`/journal` → Firestore + ISR、画像 → Storage）
 - **冷凍折詰 (`/shop`) は「近日公開」モード**（2026-04-29 切替済、サブルートはすべて `/shop` にリダイレクト）

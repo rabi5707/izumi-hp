@@ -2,6 +2,16 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { ADMIN_SESSION_COOKIE } from "@/lib/admin-auth-shared";
 
+// Constant-time string comparison (Edge runtime — no node:crypto).
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let diff = 0;
+  for (let i = 0; i < a.length; i++) {
+    diff |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return diff === 0;
+}
+
 // 二段の認証ゲート:
 //   1. 全ページ Basic 認証（役員レビュー段階の一時的な保護）
 //   2. /admin/* は加えて Firebase Auth セッションクッキーの有無をチェック。
@@ -34,7 +44,12 @@ function enforceBasicAuth(req: NextRequest): NextResponse | null {
     if (sep >= 0) {
       const user = decoded.slice(0, sep);
       const pass = decoded.slice(sep + 1);
-      if (user === expectedUser && pass === expectedPass) return null;
+      if (
+        timingSafeEqual(user, expectedUser) &&
+        timingSafeEqual(pass, expectedPass)
+      ) {
+        return null;
+      }
     }
   }
 
