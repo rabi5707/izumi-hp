@@ -103,6 +103,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
 .r-grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); }
 .r-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); }
 .r-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); }
+.r-grid-5 { display: grid; grid-template-columns: repeat(5, 1fr); }
 .r-grid-6 { display: grid; grid-template-columns: repeat(6, 1fr); }
 .r-hero-split { display: grid; grid-template-columns: 1fr 1fr; }
 .r-hero-split-wide { display: grid; grid-template-columns: 1.2fr 1fr; }
@@ -110,6 +111,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
 @media (max-width: 1023px) {
   .r-grid-3 { grid-template-columns: repeat(2, 1fr); }
   .r-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .r-grid-5 { grid-template-columns: repeat(3, 1fr); }
   .r-grid-6 { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 767px) {
@@ -118,6 +120,7 @@ input:focus, select:focus, textarea:focus { border-color: var(--ink); }
   .r-hero-split-wide { grid-template-columns: 1fr; }
   .r-grid-3 { grid-template-columns: 1fr; }
   .r-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .r-grid-5 { grid-template-columns: repeat(2, 1fr); }
   .r-grid-6 { grid-template-columns: repeat(2, 1fr); }
   /* Heroes that put image on the right should put it BELOW text on mobile */
   .r-hero-split > .r-hero-media,

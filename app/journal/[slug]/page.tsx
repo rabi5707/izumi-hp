@@ -255,9 +255,8 @@ export default async function JournalArticle({
             </div>
           </div>
           <div
+            className="r-grid-3"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
               gap: 24,
             }}
           >

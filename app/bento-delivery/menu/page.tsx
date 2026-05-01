@@ -53,9 +53,8 @@ export default function BentoMenu() {
         {BENTO_LINEUP.map((b, i) => (
           <div
             key={b.slug}
+            className="r-hero-split-wide"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1.1fr",
               gap: 32,
               alignItems: "center",
               marginBottom: 32,
@@ -244,9 +243,8 @@ export default function BentoMenu() {
             </p>
           </div>
           <div
+            className="r-grid-5"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(5, 1fr)",
               gap: 16,
             }}
           >

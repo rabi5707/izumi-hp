@@ -58,9 +58,8 @@ export default function CateringMenu() {
         {COURSES.map((c) => (
           <div
             key={c.slug}
+            className="r-hero-split-wide"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 1.2fr",
               gap: 32,
               alignItems: "center",
               background: "var(--bg)",
@@ -224,9 +223,8 @@ export default function CateringMenu() {
             </h2>
           </div>
           <div
+            className="r-grid-2"
             style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
               gap: 20,
               maxWidth: 960,
               margin: "0 auto",

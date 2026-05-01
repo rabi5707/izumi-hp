@@ -50,9 +50,8 @@ export default function CateringInquiryPage() {
       {/* Trust badges */}
       <section className="shell" style={{ padding: "0 40px 40px" }}>
         <div
+          className="r-grid-3"
           style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
             gap: 16,
             maxWidth: 960,
             margin: "0 auto",
