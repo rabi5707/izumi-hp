@@ -1,29 +1,32 @@
 # 株式会社イズミ産業 サイト — 引継ぎドキュメント
 
 > **次回 Claude Code セッション、または別の開発者向けの引継ぎ資料**
-> 最終更新: 2026年4月30日
+> 最終更新: 2026年5月1日
 
 このドキュメントを読めば、プロジェクトの現状・設計思想・残作業がわかります。
 
-## 🚦 現在のステータス（2026-04-30 時点）
+## 🚦 現在のステータス（2026-05-01 時点）
 
-**Vercel デプロイ完了**、**ブラウザで完結する管理画面（読み物 + 画像庫）も稼働中**。役員レビュー用に Basic 認証で保護中。
+**Vercel デプロイ完了**、**ブラウザで完結する管理画面（商品 + 読み物 + 画像庫 + お問合せ受信箱 + ダッシュボード）も稼働中**。役員レビュー用に Basic 認証で保護中。
 
 - 本番URL: `https://izumi-hp.vercel.app`
-- 管理画面: `/admin/journal`（読み物編集）/ `/admin/images`（画像庫）
+- 管理画面: `/admin`（ダッシュボード）/ `/admin/products`（商品 CRUD）/ `/admin/inquiries`（お問合せ受信箱）/ `/admin/journal`（読み物編集）/ `/admin/images`（画像庫）
 - デプロイ先: Vercel (`rabi5707's projects` / Hobby プラン)
 - 自動デプロイ: GitHub `main` への push で自動再ビルド
 - Basic 認証: 認証情報は Vercel の環境変数 `BASIC_AUTH_USER` / `BASIC_AUTH_PASSWORD` を参照（一般公開時に env vars を空にして無効化）。**認証情報は Vercel ダッシュボードと 1Password 等のシークレット管理に限定し、コードや CLAUDE.md には書かない**
-- 管理画面ログイン: `yamaizumi@isg.co.jp` + Firebase Auth パスワード（izumi-menu と共通）
-- Firebase 接続済（`/inquiry` → Firestore、`/journal` → Firestore + ISR、画像 → Storage）
-- **冷凍折詰 (`/shop`) は「近日公開」モード**（2026-04-29 切替済、サブルートはすべて `/shop` にリダイレクト）
-- **スマホ対応 Phase 1 完了**（2026-04-30）— `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティ導入。主要4ページ（portal/catering top+guide/bento-delivery top）+ フッターを置換済み。残ページは Phase 2 で対応
+- 管理画面ログイン: `yamaizumi@isg.co.jp` + Firebase Auth パスワード（izumi-menu と共通）。**Firestore / Storage rules は `request.auth.token.admin == true` を要求**（2026-05-01 に強化済）。新規管理者を追加する際は `node scripts/grant-admin-claim.mjs <email>` で claim 付与が必須
+- Firebase 接続済（`/inquiry` → Firestore、`/journal` `/shop` → Firestore + ISR、画像 → Storage）
+- **Firebase Auth の自己サインアップは無効化済**（2026-05-01）— Sign-in providers に「メール / パスワード」は残してあるが、新規ユーザー登録は管理者操作のみ
+- **冷凍折詰 (`/shop`) は「近日公開」モード**（2026-04-29 切替済、サブルートはすべて `/shop` にリダイレクト）。商品マスタは `lib/products.ts` のハードコードから Firestore `products` collection に移行済（2026-05-01）。`/admin/products` で CRUD 可能、`/api/checkout` も Firestore 経由で価格検証
+- **お問合せ受信箱 (`/admin/inquiries`)** 新設（2026-05-01）— `/inquiry` 投稿の一覧・詳細・状態管理（未読/既読/対応済/完了）・社内メモ・削除。未読件数は管理画面ヘッダーにバッジ表示。**メール通知は本格始動前に整備予定**（現状はこの管理画面で確認する運用）
+- **スマホ対応 Phase 2 完了**（2026-05-01）— bento-delivery / catering / journal の残ページの inline grid を `.r-grid-*` `.r-hero-split-wide` ユーティリティに置換。`.r-grid-5` を新設。SiteHeader は既存 `@media` で対応済
+- **ファビコン・OG画像配置済**（2026-05-01）— `app/icon.png` `app/apple-icon.png` `app/opengraph-image.png` `app/twitter-image.png`。墨色 `#1a1613` 背景 + ISG ロゴ。Next.js 14 App Router の規約名で自動認識
 - **決済方法・注文締切ルール確定**（2026-04-29）— bento/catering = 銀行振込 or 当日現金、shop = Stripe（商品確定後）。納期: bento = 2日前17時、catering = 1週間前
 - **宴会場の名称変更**（2026-04-30）— 「日本料理 広美」→「料亭 横浜銀泉亭」へ全面リネーム
 
 クォータ増加申請は不承認だったため、**既存の `izumi-menu-app-b8546` プロジェクトを相乗り運用** する方針（詳細は「重要な設計判断」と「Firebase 構成」セクション参照）。
 
-次の優先タスク: **Stripe 接続** → メールアドレス確定 → スマホ対応 Phase 2（残ページ）→ ケータリング/お届け弁当の商品画像配置（Phase 5-Lite で十分か、5-Full まで踏むかは要判断）。
+次の優先タスク: **Stripe 接続**（shop 公開時）→ **お問合せのメール通知整備**（Power Automate / 案 A 新ドメイン取得 / 案 C 当面は受信箱で運用、本格始動前まで保留可）→ shop 商品画像配置・公開モードへの切替 → 会社案内ページの拡充（沿革・板前紹介、原稿待ち）。
 
 ---
 
@@ -275,9 +278,9 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 
 ---
 
-## 📦 商品データ（lib/products.ts）
+## 📦 商品データ（Firestore `products` collection）
 
-**冷凍折詰のみ・全8品:**
+**冷凍折詰のみ・全8品（2026-05-01 時点の seed 値）:**
 
 | ID | カテゴリ | 商品名 | 価格 |
 |---|---|---|---|
@@ -290,7 +293,18 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 | osechi-sandan | osechi | おせち 三段重 | ¥32,000 |
 | fusechi | osechi | ふせち（喪中おせち）| ¥15,000 |
 
-`type: "ec"` のみ。`type: "catering"` は廃止済み（catering は `/catering` に独立）。
+**真実の源**: Firestore `products` collection（doc ID = 商品 ID）。`/admin/products` で CRUD 可能、`/api/checkout` の価格検証も Firestore 経由（2026-05-01）。
+
+**関連ファイル:**
+- `lib/products.ts` — `CATEGORIES`（3カテゴリのメタデータ・ハードコード）と `Product` 型のみ。商品本体は Firestore に移行済
+- `lib/products-schema.ts` — Firestore document の型 `ProductDoc`
+- `lib/products-server.ts` — `fetchAllPublishedProducts()` `fetchProductForCheckout()` 等の Admin SDK 経由読込
+- `lib/products-admin.ts` — Server Actions: createProduct / updateProduct / deleteProduct
+- `scripts/seed-products.mjs` — 上記 8 商品を Firestore に流し込む idempotent スクリプト
+
+**categories は静的**: `CATEGORIES`（shokado / oiwai / osechi）は `lib/products.ts` のハードコードのまま。新カテゴリを増やすときはコード変更が必要。
+
+商品データの `type: "ec"` のみ。`type: "catering"` は廃止済み（catering は `/catering` に独立）。
 
 ---
 
@@ -327,12 +341,16 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 - [x] 管理画面 `/admin/journal` で新規・編集・公開停止・削除（コード触らず完結）
 - [x] カバー画像 upload（Firebase Storage `journal-covers/`）
 
-### 管理画面（/admin）— **2026-04-29 新設**
-- [x] Firebase Auth (Email/Password) + `ADMIN_EMAILS` allowlist
+### 管理画面（/admin）— **2026-04-29 新設、2026-05-01 大幅拡張**
+- [x] Firebase Auth (Email/Password) + `ADMIN_EMAILS` allowlist + Custom Claim `admin: true`
 - [x] サーバーサイドセッションクッキー（5日、HttpOnly）
+- [x] `/admin` ダッシュボード（カード式・各管理対象への入口・未読件数アラート）
+- [x] `/admin/products` 冷凍折詰 商品 CRUD（画像 upload・並び順・公開切替・カテゴリ）
+- [x] `/admin/inquiries` お問合せ受信箱（一覧・詳細・状態管理・社内メモ・削除・自動既読化）
 - [x] `/admin/journal` 読み物 CRUD + Markdownエディタ + プレビュー + カバー画像
 - [x] `/admin/images` 汎用画像庫（upload・URLコピー・削除、Firebase Storage `uploads/` 配下）
 - [x] middleware で `/admin/*` 未ログイン時 `/admin/login` へ自動誘導
+- [x] ヘッダーに未読バッジ・新規管理者は `node scripts/grant-admin-claim.mjs <email>` で claim 付与
 
 ### 共通
 - [x] お見積フォーム（`/inquiry/InquiryClient.tsx` を各セクションで再利用、Firestore書込済）
@@ -340,7 +358,10 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 - [x] **決済方法の表記統一**（2026-04-29）— bento/catering の各 LP・特商法・inquiry に「銀行振込 or 当日現金」を反映、inquiry フォームに希望決済 chip 追加
 - [x] **注文締切ルールの統一**（2026-04-29）— bento = ご希望日の2日前17時、catering = 1週間前。「お急ぎはお電話で」を必ず併記
 - [x] **スマホ向けレスポンシブ Phase 1**（2026-04-30）— `app/styles-design.css` に `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティを新設、portal/catering/bento-delivery の主要4ページ + 両セクションフッター + 特商法表（spec-table）を mobile 対応
+- [x] **スマホ向けレスポンシブ Phase 2**（2026-05-01）— bento-delivery / catering / journal の残ページの inline grid を ユーティリティに置換、`.r-grid-5` を新設。SiteHeader は既存 `@media` で対応済
 - [x] **宴会場の名称変更**（2026-04-30）— アクティブコード（portal / SiteFooter / about / CateringFooter / lib/portal.ts）を「日本料理 広美」→「料亭 横浜銀泉亭」に置換
+- [x] **セキュリティ強化**（2026-05-01）— Firestore/Storage rules を `request.auth.token.admin == true` 必須に / Firebase 自己サインアップ無効化 / `/api/checkout` 価格をサーバ側で再計算 / `/api/inquiry` フィールド上書き防止 + IP rate limit + 文字数上限 / Stripe webhook の Firestore 失敗時に 500 リトライ / Basic 認証 constant-time 比較 / JSON-LD `</script>` 脱出対策 / `next.config.mjs` images.remotePatterns をプロジェクトバケットに限定
+- [x] **ファビコン・OG画像配置**（2026-05-01）— `app/icon.png`（512x512）/ `app/apple-icon.png`（180x180）/ `app/opengraph-image.png` `app/twitter-image.png`（1200x630）。墨色 `#1a1613` 背景 + ISG ロゴ。元素材は `public/images/ChatGPT Image 2026年5月1日 19_19_07.png`（透過 PNG）。再生成は `node scripts/generate-icons.mjs`
 
 ---
 
@@ -356,51 +377,59 @@ CSS変数システムで `data-section` 属性によりカラーパレットを�
 - `.env.local` に `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET`
 - 雛形は `app/shop/_archive/` 内 + `app/api/checkout/route.ts` `app/api/stripe/webhook/route.ts` に既存
 - shop の `_archive` を本体に戻すタイミングと連動
+- 価格検証は **Firestore `products` collection** 経由で済（2026-05-01）— `/admin/products` の更新が即座に反映される
 
-#### 3. メールアドレス確定
-- `lib/legal.ts` の `email: "info@shop.isg.co.jp"` を実在のアドレスに
-- 注文・お見積受信用のメール送信機能（Resend or SendGrid）
+#### 3. お問合せのメール通知（本格始動前まで保留可）
+**現状の運用**: メール通知は未実装。`/admin/inquiries` の管理画面で確認する運用（未読バッジで気づける）。当面はこれで十分。
+
+**整備が必要になったら**（2026-05-01 ユーザーと相談済の選択肢）:
+- **案 A 新ドメイン取得** — `izumi-info.com` 等を取得（年 1,500円程度）→ Resend で認証 → `noreply@izumi-info.com` から送信。45 分で完了、自己完結。
+- **案 B isg.co.jp で送信** — `e-jim@isg.co.jp` の Microsoft 365 から送信。**isg.co.jp の DNS 管理者を社内で確認する必要あり**（現状不明）。
+- **案 C Power Automate** — Microsoft 365 標準機能で `e-jim@isg.co.jp` 経由のメール送信フローを GUI で構築。30 分。`https://make.powerautomate.com/` でライセンス確認から。
+- 通知先は `e-jim@isg.co.jp`（事務メアド）。本格運用時には `lib/legal.ts` の `email` 値も実アドレスに差替。
+
+#### 4. メールアドレス確定
+- `lib/legal.ts` の `email: "info@shop.isg.co.jp"` を実在のアドレスに（おそらく `e-jim@isg.co.jp` か別のお問合せ専用）
 
 ### 🟡 優先度: 中
 
-#### 4. ケータリング/お届け弁当の商品画像配置（**2026-04-29 時点 未着手**）
+#### 5. ケータリング/お届け弁当の商品画像配置（**未着手**）
 2つの選び方があります:
 
 - **Phase 5-Lite（半日）** — `lib/catering.ts` `lib/bento-delivery.ts` の各データに `image: string` フィールドを追加して画像URLを書く方式。`/admin/images` で upload → URL を貼る → `git push`。年1〜2回しか変えない静的データに最適。
 - **Phase 5-Full（3〜4日）** — catering / bento-delivery / portal を全部 Firestore + 管理画面化。コース説明・価格・FAQまで全部ブラウザ編集できる。商品画像の差し替え頻度が高くなったら検討。
 
-ユーザの方針: 「画像差し込みくらいなら直接ファイルでよい」（2026-04-29）→ **当面は 5-Lite 路線**。
+ユーザの方針: 「画像差し込みくらいなら直接ファイルでよい」「BC は差し替えない予定」（2026-04-29 / 2026-05-01）→ **当面は 5-Lite 路線、必要になってから着手**。
 
-#### 5. shop の本格復活
+#### 6. shop の本格復活
 - `app/shop/_archive/original-page.tsx` `original-layout.tsx` を本体に戻す
 - `next.config.mjs` の redirects ブロックを削除
 - `lib/portal.ts` `components/SectionIndicator.tsx` の `comingSoon: true` を外す
-- 商品画像（8品）配置・Stripe接続・メール送信と並行で進める
+- shop ページ側の商品取得を `lib/products-server.ts` の `fetchAllPublishedProducts()` 経由に切替（現状は `lib/products.ts` の static `PRODUCTS` を参照）
+- 商品画像（8品）は `/admin/products` 各商品の編集画面で upload
+- Stripe接続・メール送信と並行で進める
 
-#### 6. 会社案内ページの拡充
+#### 7. 会社案内ページの拡充
 - 沿革（タイムライン）
 - 板前紹介
 - 受賞歴・メディア掲載
-
-#### 7. スマホ対応 Phase 2（Phase 1 の続き）
-- 残ページ: shop / journal / legal / admin 系の inline `gridTemplateColumns` を `.r-grid-*` ユーティリティに置換（残約20箇所）
-- catering/menu, bento-delivery/menu, 各 inquiry サブページ
-- ヘッダー（SiteHeader）のスマホ対応 — `section-header-bar` のスマホ対応はあるが SiteHeader は別系統
-- 実機 or DevTools で確認 → 微調整
-- ユーティリティクラス設計は `app/styles-design.css` 参照（`.r-grid-N`、`.r-hero-split[-wide]` の `.r-hero-text` / `.r-hero-media` 子要素マーカー、`.r-cta-bar`）
-- 注意: `globals.css` は `styles-design.css` を import 後に独自スタイルを追加するので、`.stat-bar` のような globals.css 側で定義された要素を mobile 上書きする場合は globals.css 側に media query を書くこと（カスケード順序）
+- ※ 山泉様から原稿・写真をいただく必要あり
 
 ### 🟢 優先度: 低（あれば良い）
 
-#### 7. ログイン・会員機能（一般ユーザー向け）
+#### 8. ログイン・会員機能（一般ユーザー向け）
 - Firebase Auth で実装可（既に管理画面側で使ってる）
 - リピート注文の記録、お気に入り商品など
 
-#### 8. 管理画面の拡張
-- 既存: `/admin/journal`（読み物）/ `/admin/images`（画像庫）
-- 追加候補: お見積一覧 / 注文一覧（shop稼働後）/ ケータリング・お届け弁当 / ポータルの編集（Phase 5-Full）
+#### 9. inquiry の rate limit を Upstash Redis 化
+- 現状は単一 Lambda インスタンスのメモリ内 rate limit（5req/min）
+- Vercel が並列起動した場合に擦り抜ける可能性あり。スパムが実際に来始めてから Upstash Redis / Vercel KV へ置き換え
 
-#### 9. ~~ローカル → デプロイ~~ ✅ 完了
+#### 10. 管理画面の更なる拡張
+- 既存: `/admin` `/admin/products` `/admin/inquiries` `/admin/journal` `/admin/images`
+- 追加候補: 注文一覧（shop稼働後）/ ケータリング・お届け弁当・ポータルの編集（Phase 5-Full）
+
+#### 11. ~~ローカル → デプロイ~~ ✅ 完了
 Vercel に自動デプロイ稼働中。
 
 ---
@@ -569,10 +598,13 @@ AI生成プロンプト集: `docs/image-prompts.md`
 
 ## 🛠 よくある作業のレシピ
 
-### 商品を追加する（shop 復活後）
-1. `lib/products.ts` の `PRODUCTS` 配列に追加
-2. カテゴリが新しい場合は `CATEGORIES` と `CategoryId` 型も更新
-3. `public/images/products/{新ID}.jpg` に画像配置
+### 商品を追加する
+**コード編集は不要。** `/admin/products` の **「＋ 新しい商品を登録」** からブラウザで完結。商品画像も同フォーム内で upload。
+
+新カテゴリを増やしたいとき（shokado / oiwai / osechi 以外）は `lib/products.ts` の `CATEGORIES` と `CategoryId` 型を更新する必要あり（ハードコードのため）。
+
+### お問合せを確認する
+`/admin/inquiries` で受信箱を開く。詳細を開けば自動既読化。状態は「未読 → 既読 → 対応済 → 完了」で進める。社内メモ欄に経緯を残せる。
 
 ### 記事を追加する
 **コード編集は不要。** `/admin/journal` から **「＋ 新しい記事を書く」** で作成。本文は Markdown、カバー画像はフォーム内で upload。保存すると 60秒以内 に `/journal` に反映される（即時の場合もあり）。
@@ -635,6 +667,11 @@ AI生成プロンプト集: `docs/image-prompts.md`
 31. **2026-04-29**: **注文締切ルールを確定** — お届け弁当 = ご希望日の2日前17時、フルケータリング = 1週間前。「お急ぎはお電話で」を必ず併記。サイト全体の文言を統一
 32. **2026-04-30**: **スマホ向けレスポンシブ Phase 1** — `app/styles-design.css` に `.r-grid-{2,3,4,6}` `.r-hero-split[-wide]` `.r-cta-bar` ユーティリティを新設、portal/catering/bento-delivery の主要4ページ + フッターを置換。`globals.css` の旧ブルートフォース overrides（`body [style*="grid-template-columns"] { 1fr !important }`）を撤去し、6項目グリッドが縦6個に潰れる害を解消。`body { overflow-x: clip }` で site-wide 横スクロール防止。`.spec-table` の th/td 縦積み対応も追加
 33. **2026-04-30**: **宴会場の名称変更** — 「日本料理 広美」→「料亭 横浜銀泉亭」へ全面リネーム。`portal-hiromi.jpg`（2Fホワイエ・ファイル名は旧称由来のまま残置）と新画像 `ginsentei-banquet.jpg`（実写・宴会場）を `/catering` フッターで使用
+34. **2026-05-01**: **セキュリティ全面強化**。Firestore/Storage rules を `request.auth != null` から `request.auth.token.admin == true` 必須に変更（Firebase 自己サインアップした第三者の書込を防止）。Firebase コンソールでメール/パスワード自己サインアップを無効化。`scripts/grant-admin-claim.mjs` で `yamaizumi@isg.co.jp` に admin claim を付与。`/api/checkout` の価格を `lib/products.ts` から Firestore `products` 経由の信頼ルックアップに切替。`/api/inquiry` をフィールドホワイトリスト化 + IP rate limit (5req/min) + content-length 上限 (32KB)。Stripe webhook の Firestore 失敗時に 500 を返してリトライ。Basic 認証を constant-time 比較。JSON-LD で `</script>` 等の脱出をエスケープ。`next.config.mjs` の images.remotePatterns を自プロジェクトのバケットパスに限定。CLAUDE.md から認証情報を削除。
+35. **2026-05-01**: **商品管理 UI (`/admin/products`) 新設**。Firestore `products` collection を新設（doc ID = 商品 ID）、journal と同じパターンで CRUD + 画像 upload (Storage `product-images/`)。`scripts/seed-products.mjs` で既存 8 商品を流し込み。`/admin` を `/admin/journal` リダイレクトからカード式ダッシュボードに変更（INQUIRIES / PRODUCTS / JOURNAL / IMAGES の入口、各件数サマリー表示）。`/api/checkout` も Firestore 経由の価格検証に切替済。
+36. **2026-05-01**: **お問合せ受信箱 (`/admin/inquiries`) 新設**。`/inquiry` 投稿の一覧・詳細・状態管理（未読/既読/対応済/完了）・社内メモ・削除。詳細を開いた瞬間に未読→既読に自動遷移。管理ダッシュボードに未読件数アラートバンド + ヘッダーに未読バッジ。**メール通知の代替として運用**（メール通知は本格始動前まで保留、Power Automate / 新ドメイン取得 / 案 A〜C を比較済）。
+37. **2026-05-01**: **スマホ対応 Phase 2 完了**。bento-delivery/menu, bento-delivery/inquiry, catering/menu, catering/inquiry, journal/[slug] の inline grid を `.r-grid-*` `.r-hero-split-wide` ユーティリティに置換。`.r-grid-5` 新設（5col→3col→2col）。SiteHeader は既存 `@media (max-width: 920px)` `@media (max-width: 480px)` で対応済を確認、変更なし。shop の archived ルート（confirm/area/[slug] 等）は redirect で表示されないため未対応。
+38. **2026-05-01**: **ファビコン・OG 画像配置**。`app/icon.png` (512x512), `app/apple-icon.png` (180x180), `app/opengraph-image.png` `app/twitter-image.png` (1200x630)。墨色 `#1a1613` 背景 + 透過 ISG ロゴ + OG は社名「株式会社イズミ産業」+ キャッチ「横浜の老舗仕出し屋」+ 創業年「昭和四十九年（1974年）」を Yu Mincho で組版。元素材: `public/images/ChatGPT Image 2026年5月1日 19_19_07.png`（透過 RGBA）。生成スクリプト: `scripts/generate-icons.mjs`（sharp + 動的 SVG 合成）。Yu Mincho フォントは `~/.config/fontconfig/fonts.conf` で `/mnt/c/Windows/Fonts` を参照させて利用。
 
 ---
 
@@ -652,19 +689,27 @@ AI生成プロンプト集: `docs/image-prompts.md`
 このドキュメントを読んでから始めると、コンテキストが早く揃います。
 
 **現状で動いているもの:**
-- 公開サイト全体（Vercel・Basic認証保護中）
+- 公開サイト全体（Vercel・Basic認証保護中・ファビコン/OG 画像配置済）
+- `/shop` の商品マスタ（Firestore `products` collection、`/admin/products` で CRUD）— ただし `/shop` 自体は「近日公開」モードで shop ページからの読込切替は未着手
 - `/journal` の読み物読込（Firestore + ISR）
-- `/admin/journal` 読み物の編集（カバー画像upload含む）
-- `/admin/images` 汎用画像upload
-- `/inquiry` のお見積フォーム（Firestore書込）
+- `/inquiry` のお見積フォーム（Firestore 書込・サーバ側バリデーション・rate limit）
+- `/admin` ダッシュボード + `/admin/products` `/admin/inquiries` `/admin/journal` `/admin/images`
+- セキュリティ: Firestore/Storage rules で admin claim 必須・自己サインアップ不可
 
-**次のセッションで取り組む候補:**
-1. Phase 5-Lite — ケータリング/お届け弁当の商品画像追加（画像upload は管理画面、URLをコードに貼る作業を私と一緒に / 半日）
-2. Stripe 接続 + shop の `_archive` から復活（shop公開準備、半日〜1日）
-3. メールアドレス確定 + 注文・お見積メール送信機能
-4. 会社案内ページの拡充（沿革・板前紹介・受賞歴）
-5. **スマホ対応 Phase 2** — shop/journal/legal/admin/menu/inquiry サブページの inline grid 置換、SiteHeader のスマホ対応、実機検証（半日〜1日）
-6. Phase 5-Full — catering / bento-delivery / portal を Firestore + 管理画面化（編集頻度が上がってから / 3〜4日）
+**次のセッションで取り組む候補（優先順）:**
+1. **Stripe 接続 + shop の `_archive` から復活**（半日〜1日）— shop ページの product 取得を `lib/products-server.ts` 経由に切替、Stripe API key 設定、redirects 削除、`comingSoon: true` 解除
+2. **shop の商品画像配置** — `/admin/products` から各商品に画像 upload（写真撮影が完了次第）
+3. **お問合せのメール通知**（半日）— Power Automate or 案 A 新ドメイン取得（CLAUDE.md「3. お問合せのメール通知」参照）
+4. **会社案内ページの拡充**（1日）— 沿革・板前紹介・受賞歴（原稿・写真は山泉様から）
+5. **メールアドレス確定** — `lib/legal.ts` の `email` を実在のアドレスに
+6. Phase 5-Lite — ケータリング/お届け弁当の商品画像追加（必要が出たら / 半日）
+7. Phase 5-Full — catering / bento-delivery / portal を Firestore + 管理画面化（編集頻度が上がってから / 3〜4日）
+
+**新規管理者を追加する手順:**
+1. Firebase コンソールの Authentication で新規ユーザー作成（メール+パスワード）
+2. `lib/admin-auth.ts` の参照する `ADMIN_EMAILS` 環境変数（Vercel + ローカル `.env.local`）に追加
+3. `node scripts/grant-admin-claim.mjs <email>` で admin claim を付与
+4. 当該ユーザーがログアウト → 再ログインで反映
 
 公開時期目安: 約半年後（2026年10月頃）
 
